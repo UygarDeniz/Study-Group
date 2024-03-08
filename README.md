@@ -26,28 +26,28 @@ Requirements:
 
 # TODO
  - 1 
-    - Join functionalty
-    - Leave functionalty
+    - [x] Join functionalty
+    - [x] Leave functionalty
     
  - 2 
-    - like post
-    - like comment
+    - [ ] like post
+    - [ ] like comment
 
 - 3
-    - Profile
-        - Joined Groups
-        - liked posts, comments
-        - info
+    - [ ] Profile
+        - [ ] Joined Groups
+        - [ ] liked posts, comments
+        - [ ] info
 - 4
-    - search functionalty
+    - [ ] search functionalty
 
 - 5 
-    - file upload
-    - avatar upload
+    - [ ] file upload
+    - [ ] avatar upload
 - 6
-    - livechat
+    - [ ] livechat
 
 - 7 
-    - zoom and seassion things
+    - [ ] zoom and seassion things
 
 
