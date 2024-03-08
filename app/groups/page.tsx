@@ -1,39 +1,16 @@
 import GroupCard from "../(components)/GroupCard";
-
 import { FaSearch } from "react-icons/fa";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+type Group = {
+  id: number;
+  name: string;
+  description: string;
+};
 export default async function Groups() {
-  const groups = [
-    {
-      image: "/group1.jpg",
-      name: "Group Name 1",
-      description: "Group Description 1 ",
-    },
-    {
-      image: "/group2.jpg",
-      name: "Group Name 2",
-      description: "Group Description 2",
-    },
-    {
-      image: "/group1.jpg",
-      name: "Group Name 3",
-      description: "Group Description 3",
-    },
-    {
-      image: "/group1.jpg",
-      name: "Group Name 3",
-      description: "Group Description 3",
-    },
-    {
-      image: "/group1.jpg",
-      name: "Group Name 3",
-      description: "Group Description 3",
-    },
-    {
-      image: "/group1.jpg",
-      name: "Group Name 3",
-      description: "Group Description 3",
-    },
-  ];
+  const groups: Group[] = await prisma.group.findMany();
 
   return (
     <>
@@ -59,9 +36,9 @@ export default async function Groups() {
         {groups.map((group) => (
           <GroupCard
             key={group.name}
+            id={group.id.toString()}
             name={group.name}
             description={group.description}
-            image={group.image}
           />
         ))}
       </section>

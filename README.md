@@ -22,5 +22,32 @@ Requirements:
     - Zoom or Google Meet Video Sharing
     - Study session
     - Spotify playlist selection
-    - Vote for favorite musics to go up at the list
+        - Vote for favorite musics to go up at the list
+
+# TODO
+ - 1 
+    - Join functionalty
+    - Leave functionalty
+    
+ - 2 
+    - like post
+    - like comment
+
+- 3
+    - Profile
+        - Joined Groups
+        - liked posts, comments
+        - info
+- 4
+    - search functionalty
+
+- 5 
+    - file upload
+    - avatar upload
+- 6
+    - livechat
+
+- 7 
+    - zoom and seassion things
+
 

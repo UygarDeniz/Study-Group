@@ -1,31 +1,58 @@
 "use client";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import GroupImage from "../../(components)/GroupImage";
 import { FaPlus } from "react-icons/fa6";
-import Link from "next/link";
-import Post from "@/app/(components)/Post.jsx";
-import NewPost from "@/app/(components)/NewPost.jsx";
-export default function GroupPage({ params }) {
+import Post from "../../(components)/Post";
+import NewPost from "../../(components)/NewPost";
+
+type Params = {
+  groupId: string;
+};
+
+type Props = {
+  params: Params;
+};
+
+type Post = {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: Date;
+};
+
+type Group = {
+  id: string;
+  image?: string;
+  name: string;
+  posts?: Post[];
+  description: string;
+};
+
+export default function GroupPage({ params }: Props) {
   const [sort, setSort] = useState("latest");
   const [showNewPostForm, setShowNewPostForm] = useState(false);
+  const [group, setGroup] = useState<Group>({} as Group);
+
   const { groupId } = params;
-  const postId = 1;
 
-  console.log(groupId);
-  const group = {
-    image: "/group1.jpg",
-    name: "Group Name1",
-    description: "Group Description 1",
-  };
+  useEffect(() => {
+    const getPosts = async () => {
+      const res = await fetch(`/api/groups/${groupId}`);
+      const data = await res.json();
+      data.group.image = data.group.image || "/group1.jpg";
+      setGroup(data.group);
+    };
+    getPosts();
+  }, [groupId]);
 
-  console.log(showNewPostForm);
   return (
-    <div className="max-w-screen-xl mx-auto h-screen">
+    <div className="max-w-screen-xl mx-auto min-h-screen">
       {showNewPostForm && (
         <div className="fixed inset-0 z-1 flex items-center justify-center bg-black bg-opacity-50">
-          
-          <NewPost close={() => setShowNewPostForm(!showNewPostForm)}/>
+          <NewPost
+            groupId={group.id}
+            close={() => setShowNewPostForm(!showNewPostForm)}
+          />
         </div>
       )}
 
@@ -79,14 +106,22 @@ export default function GroupPage({ params }) {
           </div>
 
           <hr />
-          <Post groupId={groupId} postId={postId} />
-          <hr />
-          <Post groupId={groupId} postId={postId} />
-          <hr />
-          <Post groupId={groupId} postId={postId} />
+          <div>
+            {group.posts &&
+              group.posts.map((post) => (
+                <Post
+                  key={post.id}
+                  groupId={group.id}
+                  postId={post.id.toString()}
+                  title={post.title}
+                  content={post.content}
+                  date={post.createdAt.toString()}
+                />
+              ))}
+          </div>
         </div>
 
-        <div className=" p-4 bg-slate-100 rounded-xl ml-2 hidden md:block">
+        <div className=" p-4 bg-slate-100 rounded-xl ml-2 hidden md:block min-h-96 max-h-[700px]">
           <h2 className="text-2xl font-bold mb-6">Group Description</h2>
           <p className="">{group.description}</p>
         </div>

@@ -1,10 +1,9 @@
 "use client";
-import React from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useSession } from "next-auth/react";
+
 function signup() {
   const [formData, setFormData] = useState({
     name: "",
@@ -14,11 +13,11 @@ function signup() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const res = await fetch("/api/users", {
       method: "POST",

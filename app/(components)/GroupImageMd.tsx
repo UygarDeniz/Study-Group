@@ -1,8 +1,12 @@
 import React from "react";
 import Image from "next/image";
-function GroupImageMd({image}) {
+
+type GroupImageMdProps = {
+  image: string;
+};
+function GroupImageMd({image}: GroupImageMdProps) {
   return (
-    <div className="rounded-full bg-white p-2 ">
+    <div className="rounded-full ">
       <Image
         src={image}
         alt="Group 1"

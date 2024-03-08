@@ -1,12 +1,16 @@
-
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { NextRequest } from "next/server";
 import bcrypt from "bcrypt";
-export async function POST(req) {
+
+export async function POST(req: NextRequest) {
   const body = await req.json();
   const prisma = new PrismaClient();
   if (!body.email || !body.password || !body.name) {
-    return NextResponse.json({ message: "Please fill in all fields" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Please fill in all fields" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -16,9 +20,12 @@ export async function POST(req) {
       },
     });
     if (user) {
-      return NextResponse.json({ message: "User already exists" }, { status: 400 });
+      return NextResponse.json(
+        { message: "User already exists" },
+        { status: 400 }
+      );
     }
-    
+
     const hashedPassword = await bcrypt.hash(body.password, 10);
 
     const newUser = await prisma.user.create({

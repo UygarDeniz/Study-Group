@@ -1,8 +1,13 @@
 import React from "react";
 import Image from "next/image";
-function GroupImageSm({ image }) {
+type GroupImageSmProps = {
+  image: string;
+};
+
+
+function GroupImageSm({ image } : GroupImageSmProps) {
   return (
-    <div className="rounded-full bg-white">
+    <div className="rounded-full">
       <Image
         src={image}
         alt="Group 1"

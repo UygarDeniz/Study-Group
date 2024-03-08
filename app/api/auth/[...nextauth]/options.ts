@@ -17,7 +17,7 @@ export const options = {
           placeholder: "Password",
         },
       },
-      async authorize(credentials) {
+      async authorize(credentials : {email: string, password: string}) :  Promise<any> {
         const prisma = new PrismaClient();
         try {
           const user = await prisma.user.findUnique({
@@ -58,7 +58,7 @@ export const options = {
     },
     async session({ session, token }) {
       session.user = token.user;
-
+     
       return session;
     },
   },
