@@ -4,7 +4,7 @@ import GroupImage from "../../(components)/GroupImage";
 import { FaPlus } from "react-icons/fa6";
 import Post from "../../(components)/Post";
 import NewPost from "../../(components)/NewPost";
-
+import JoinButton from "../../(components)/JoinLeaveButton";
 type Params = {
   groupId: string;
 };
@@ -64,9 +64,7 @@ export default function GroupPage({ params }: Props) {
         </div>
 
         <div className="flex gap-4 item-center mt-4 md:m-0">
-          <button className="md:text-lg px-6 py-1 rounded-3xl transition-colors duration-200 ease-in-out text-white bg-black hover:bg-gray-700 hover:text-white">
-            Join
-          </button>
+          <JoinButton groupId={groupId} />
 
           <button
             onClick={() => setShowNewPostForm(!showNewPostForm)}

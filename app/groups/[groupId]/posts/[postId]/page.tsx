@@ -7,6 +7,7 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import { formatDistanceToNow } from "date-fns";
 import NewComment from "@/app/(components)/NewComment";
 import Comment from "@/app/(components)/Comment";
+import JoinButton from "@/app/(components)/JoinLeaveButton";
 
 type Params = {
   groupId: string;
@@ -22,18 +23,17 @@ type User = {
   name: string;
 };
 
-type Comment = {
-  id: number;
-  author: User;
-  content: string;
-  createdAt: Date;
-};
-
 type Post = {
   id: number;
   title: string;
   createdAt: Date;
-  Comment: Comment[];
+  comment: Comment[];
+};
+type Comment = {
+  id: number;
+  content: string;
+  createdAt: Date;
+  author: User;
 };
 
 type Group = {
@@ -51,7 +51,7 @@ async function Post({ params }: Props) {
       id: Number(postId),
     },
     include: {
-      Comment: {
+      comment: {
         include: {
           author: true,
         },
@@ -88,14 +88,12 @@ async function Post({ params }: Props) {
                 <h1>{user.name}</h1>
               </div>
             </div>
-            <button className="md:text-lg px-6 py-1 rounded-3xl transition-colors duration-200 ease-in-out text-white bg-black hover:bg-gray-700 hover:text-white">
-              Join
-            </button>
+            <JoinButton groupId={groupId} />
           </div>
           <h2 className="text-3xl mb-10 mt-4">{post.title}</h2>
           <hr className="m-2" />
           <NewComment postId={postId} groupId={groupId} />
-          {post.Comment.map((comment) => (
+          {post.comment.map((comment) => (
             <Comment
               key={comment.id}
               username={comment.author.name}
