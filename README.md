@@ -30,8 +30,8 @@ Requirements:
     - [x] Leave functionalty
     
  - 2 
-    - [ ] like post
-    - [ ] like comment
+    - [x] like post
+    - [x] like comment
 
 - 3
     - [ ] Profile

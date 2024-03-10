@@ -13,7 +13,7 @@ export async function POST(req: NextRequest, { params }) {
   }
 
   const userId: number = session.user.id;
-  const groupId = params.id;
+  const groupId = params.groupId;
 
   try {
     const existingMembership = await prisma.groupMember.findFirst({

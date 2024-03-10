@@ -29,11 +29,25 @@ type Post = {
   createdAt: Date;
   comment: Comment[];
 };
+
 type Comment = {
   id: number;
   content: string;
   createdAt: Date;
   author: User;
+  CommentDislike: CommentDislike[];
+  CommentLike: CommentLike[];
+};
+type CommentLike = {
+  id: number;
+  userId: number;
+  commentId: number;
+};
+
+type CommentDislike = {
+  id: number;
+  userId: number;
+  commentId: number;
 };
 
 type Group = {
@@ -46,14 +60,17 @@ async function Post({ params }: Props) {
   const { groupId, postId } = params;
   const prisma = new PrismaClient();
   const session = await getServerSession(options);
-  const post: Post = await prisma.post.findUnique({
+
+  const post = await prisma.post.findUnique({
     where: {
       id: Number(postId),
     },
     include: {
-      comment: {
+      Comment: {
         include: {
           author: true,
+          CommentDislike: true,
+          CommentLike: true,
         },
       },
     },
@@ -93,12 +110,15 @@ async function Post({ params }: Props) {
           <h2 className="text-3xl mb-10 mt-4">{post.title}</h2>
           <hr className="m-2" />
           <NewComment postId={postId} groupId={groupId} />
-          {post.comment.map((comment) => (
+          {post.Comment.map((comment) => (
             <Comment
               key={comment.id}
+              id={comment.id}
               username={comment.author.name}
               date={comment.createdAt}
               content={comment.content}
+              likes={comment.CommentLike.length}
+              dislikes={comment.CommentDislike.length}
             />
           ))}
         </div>

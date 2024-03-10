@@ -13,18 +13,31 @@ type Props = {
   params: Params;
 };
 
+type PostLike = {
+  postId: number;
+  userId: number;
+  like: boolean;
+};
+
+type PostDislike = {
+  postId: number;
+  userId: number;
+  dislike: boolean;
+};
 type Post = {
   id: number;
   title: string;
   content: string;
   createdAt: Date;
+  PostLike: PostLike[];
+  PostDislike: PostDislike[];
 };
 
 type Group = {
   id: string;
   image?: string;
   name: string;
-  posts?: Post[];
+  Post?: Post[];
   description: string;
 };
 
@@ -105,8 +118,8 @@ export default function GroupPage({ params }: Props) {
 
           <hr />
           <div>
-            {group.posts &&
-              group.posts.map((post) => (
+            {group.Post &&
+              group.Post.map((post) => (
                 <Post
                   key={post.id}
                   groupId={group.id}
@@ -114,6 +127,8 @@ export default function GroupPage({ params }: Props) {
                   title={post.title}
                   content={post.content}
                   date={post.createdAt.toString()}
+                  likes = {post.PostLike.length}
+                  dislikes = {post.PostDislike.length}
                 />
               ))}
           </div>

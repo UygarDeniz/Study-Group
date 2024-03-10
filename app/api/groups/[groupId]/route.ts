@@ -7,18 +7,24 @@ const prisma = new PrismaClient();
 export async function GET(
   res: NextResponse,
 
-  { params }: { params: { id: string } }
+  { params }: { params: { groupId: string } }
 ) {
-  const { id } = params;
+  const { groupId } = params;
 
   const foundGroup = await prisma.group.findUnique({
     where: {
-      id: Number(id),
+      id: Number(groupId),
     },
     include: {
-      posts: true,
+      Post: {
+        include: {
+          PostLike: true,
+          PostDislike: true,
+        },
+      },
     },
   });
+ 
 
   return NextResponse.json({ group: foundGroup });
 }

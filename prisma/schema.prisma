@@ -8,27 +8,33 @@ datasource db {
 }
 
 model User {
-  id        Int           @id @default(autoincrement())
-  email     String        @unique
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
   name      String
+  createdAt DateTime @default(now())
   password  String
-  groups    GroupMember[]
-  adminOf   GroupAdmin[]
-  posts     Post[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @default(now()) @updatedAt
-  comments  Comment[]
+  updatedAt DateTime @updatedAt
+
+  groups         GroupMember[]
+  adminOf        GroupAdmin[]
+  posts          Post[]
+  comments       Comment[]
+  CommentLike    CommentLike[]
+  PostLike       PostLike[]
+  PostDislike    PostDislike[]
+  CommentDislike CommentDislike[]
 }
 
 model Group {
-  id          Int           @id @default(autoincrement())
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now()) @updatedAt
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   name        String
   description String
-  members     GroupMember[]
-  admins      GroupAdmin[]
-  posts       Post[]
+
+  GroupMember GroupMember[]
+  GroupAdmin  GroupAdmin[]
+  Post        Post[]
 }
 
 model GroupMember {
@@ -44,7 +50,7 @@ model GroupMember {
 model GroupAdmin {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  updatedAt DateTime @updatedAt
   userId    Int
   groupId   Int
   Group     Group    @relation(fields: [groupId], references: [id])
@@ -52,25 +58,66 @@ model GroupAdmin {
 }
 
 model Post {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   title     String
   content   String
-  author    User      @relation(fields: [authorId], references: [id])
   authorId  Int
   groupId   Int
-  Group     Group     @relation(fields: [groupId], references: [id])
-  comment   Comment[]
+  author    User     @relation(fields: [authorId], references: [id])
+  Group     Group    @relation(fields: [groupId], references: [id])
+
+  PostLike    PostLike[]
+  PostDislike PostDislike[]
+  Comment     Comment[]
 }
 
 model Comment {
+  id             Int              @id @default(autoincrement())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  content        String
+  authorId       Int
+  postId         Int
+  Post           Post             @relation(fields: [postId], references: [id])
+  author         User             @relation(fields: [authorId], references: [id])
+  CommentLike    CommentLike[]
+  CommentDislike CommentDislike[]
+}
+
+model CommentLike {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  content   String
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+  userId    Int
+  commentId Int
+  User      User     @relation(fields: [userId], references: [id])
+  Comment   Comment  @relation(fields: [commentId], references: [id])
+}
+
+model PostLike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
   postId    Int
+  User      User     @relation(fields: [userId], references: [id])
   Post      Post     @relation(fields: [postId], references: [id])
+}
+
+model PostDislike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  postId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  Post      Post     @relation(fields: [postId], references: [id])
+}
+
+model CommentDislike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  commentId Int
+  User      User     @relation(fields: [userId], references: [id])
+  Comment   Comment  @relation(fields: [commentId], references: [id])
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
+import PostLikeDislikeButton from "./PostLikeDislikeButton";
 
 type PostProps = {
   groupId: string;
@@ -8,12 +9,22 @@ type PostProps = {
   title: string;
   content: string;
   date: string;
+  likes: number;
+  dislikes: number;
 };
 
-function Post({ groupId, postId, title, content, date }: PostProps) {
+function Post({
+  groupId,
+  postId,
+  title,
+  content,
+  date,
+  likes,
+  dislikes,
+}: PostProps) {
   return (
     <>
-      <article className="w-full p-4 hover:shadow-xl hover:bg-slate-50 rounded-xl">
+      <article className="w-full pt-4 px-4 pb-1 hover:shadow-xl hover:bg-slate-50 rounded-xl">
         <Link href={`/groups/${groupId}/posts/${postId}`}>
           <div className="flex items-center gap-3">
             <h2 className="text-xl font-bold">{title}</h2>
@@ -22,10 +33,11 @@ function Post({ groupId, postId, title, content, date }: PostProps) {
             </h3>
           </div>
 
-          <p className="mt-2">{content}</p>
+          <p className="my-2">{content}</p>
         </Link>
+        <PostLikeDislikeButton postId={postId} difference={likes - dislikes} />
       </article>
-      <hr className="mt-1 border-gray-300"/>
+      <hr className="mt-1 border-gray-300" />
     </>
   );
 }
