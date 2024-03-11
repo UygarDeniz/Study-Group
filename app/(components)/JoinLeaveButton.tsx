@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FaSpinner } from "react-icons/fa6";
+
+import { ImSpinner2 } from "react-icons/im";
 
 type JoinButtonProps = {
   groupId: string;
@@ -46,14 +47,20 @@ function JoinButton({ groupId, color }: JoinButtonProps) {
       onClick={handleJoin}
       className={`md:text-lg px-6 py-1 rounded-3xl transition-colors duration-200 ease-in-out text-white  hover:text-white ${buttonColor}`}
     >
-      {loading ? <FaSpinner className="text-xl"/> : "Join"}
+      {loading ? (
+        <div className="px-4 py-1">
+          <ImSpinner2 className="text-lg animate-spin" />
+        </div>
+      ) : (
+        "Join"
+      )}
     </button>
   ) : (
     <button
       onClick={handleLeave}
       className={`md:text-lg px-6 py-1 rounded-3xl transition-colors duration-200 ease-in-out text-white  hover:text-white ${buttonColor}`}
     >
-      {loading ? <FaSpinner className="text-2xl"/> : "Leave"}
+      {loading ? <ImSpinner2 className="text-2xl animate-spin " /> : "Leave"}
     </button>
   );
 }

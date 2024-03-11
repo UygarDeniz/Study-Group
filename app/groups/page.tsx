@@ -9,13 +9,18 @@ type Group = {
   name: string;
   description: string;
 };
-export default async function Groups() {
+async function getGroups(){
   const groups: Group[] = await prisma.group.findMany();
+  return groups;
 
+}
+export default async function Groups() {
+  
+  const groups = await getGroups();
   return (
     <>
       <div
-        className="relative bg-cover bg-center h-[350px]"
+        className="relative bg-cover bg-center h-[350px]" 
         style={{ backgroundImage: "url('/community2.jpg')" }}
       >
         <h1 className="text-6xl font-bold text-white text-center pt-20">

@@ -34,10 +34,11 @@ Requirements:
     - [x] like comment
 
 - 3
-    - [ ] Profile
-        - [ ] Joined Groups
+    - [x ] Profile
+        - [x] info
+        - [x] Joined Groups
+        - [x] update settings
         - [ ] liked posts, comments
-        - [ ] info
 - 4
     - [ ] search functionalty
 

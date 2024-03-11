@@ -88,7 +88,7 @@ async function Post({ params }: Props) {
 
   return (
     <div className=" max-w-screen-xl mx-auto mt-10 min-h-screen">
-      <div className="grid grid-cols-5 justify-between">
+      <main className="grid grid-cols-5 justify-between">
         <div className="col-span-4 ">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -123,11 +123,11 @@ async function Post({ params }: Props) {
           ))}
         </div>
 
-        <div className=" p-4 bg-slate-100 rounded-xl ml-2 hidden md:block max-h-[700px]">
+        <aside className=" p-4 bg-slate-100 rounded-xl ml-2 hidden md:block max-h-[700px]">
           <h2 className="text-2xl font-bold mb-6">Group Description</h2>
           <p className="">{group.description}</p>
-        </div>
-      </div>
+        </aside>
+      </main>
     </div>
   );
 }

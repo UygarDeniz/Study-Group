@@ -14,7 +14,9 @@ model User {
   createdAt DateTime @default(now())
   password  String
   updatedAt DateTime @updatedAt
-
+  bio       String?
+  avatar    String?
+  
   groups         GroupMember[]
   adminOf        GroupAdmin[]
   posts          Post[]

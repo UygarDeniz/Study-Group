@@ -15,11 +15,11 @@ export default async function Home() {
     <main className="flex  flex-col ">
       <section className="flex text-center lg:text-left ">
         <div className="mt-10 lg:mt-32">
-          <h1 className="text-4xl lg:text-6xl font-bold mx-20">
+          <h1 className="text-4xl lg:text-6xl font-bold mx-20 text-nowrap">
             Together We <br />
             <span className="text-red-500">Achieve</span> More
           </h1>
-          <p className=" text-xl lg:text-2xl mt-2 mb-6 mx-20 ">
+          <p className=" text-xl lg:text-2xl mt-2 mb-6 mx-20  ">
             A web application that helps students form virtual study groups.
             Collaborate, share resources, and schedule study sessions.
           </p>

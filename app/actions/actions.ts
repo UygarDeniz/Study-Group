@@ -55,3 +55,24 @@ export async function createComment(postId: string, groupId: string, formData : 
   
   revalidatePath(`/groups/${groupId}/posts/${postId}`);
 }
+
+export async function changeUserSettings(formData: FormData) {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const bio = formData.get("bio") as string;
+
+  
+  const session = await getServerSession(options);
+  const user = await prisma.user.update({
+    where: {
+      id: session.user.id,
+    },
+    data: {
+      name,
+      email,
+      bio,
+    },
+  });
+  revalidatePath(`/profile`);
+  redirect(`/profile`);
+}

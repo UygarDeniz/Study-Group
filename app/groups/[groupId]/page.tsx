@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa6";
 import Post from "../../(components)/Post";
 import NewPost from "../../(components)/NewPost";
 import JoinButton from "../../(components)/JoinLeaveButton";
+
 type Params = {
   groupId: string;
 };
@@ -44,20 +45,29 @@ type Group = {
 export default function GroupPage({ params }: Props) {
   const [sort, setSort] = useState("latest");
   const [showNewPostForm, setShowNewPostForm] = useState(false);
-  const [group, setGroup] = useState<Group>({} as Group);
+  const [group, setGroup] = useState<Group >({} as Group);
+ 
 
   const { groupId } = params;
 
   useEffect(() => {
     const getPosts = async () => {
-      const res = await fetch(`/api/groups/${groupId}`);
-      const data = await res.json();
-      data.group.image = data.group.image || "/group1.jpg";
-      setGroup(data.group);
+      try {
+        const res = await fetch(`/api/groups/${groupId}`);
+        const data = await res.json();
+        data.group.image = data.group.image || "/group1.jpg";
+        setGroup(data.group);
+      } catch (err) {
+        console.error(err);
+      }
     };
     getPosts();
-  }, [groupId]);
+  }, []);
 
+  
+
+
+  
   return (
     <div className="max-w-screen-xl mx-auto min-h-screen">
       {showNewPostForm && (
@@ -69,7 +79,7 @@ export default function GroupPage({ params }: Props) {
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row p-4 item-start md:items-center justify-between bg-gradient-to-b from-slate-100 to-white">
+      <div className="flex flex-col md:flex-row p-4 item-start md:items-center justify-between bg-gradient-to-b from-gray-100 to-white">
         <div className="flex items-center">
           <GroupImage image={group.image} alt={group.name} />
 
@@ -88,7 +98,7 @@ export default function GroupPage({ params }: Props) {
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-5">
+      <main className="grid grid-cols-5">
         <div className="col-span-5 md:col-span-4">
           <div className="flex items-center gap-1 justify-end mr-20">
             <button
@@ -127,18 +137,18 @@ export default function GroupPage({ params }: Props) {
                   title={post.title}
                   content={post.content}
                   date={post.createdAt.toString()}
-                  likes = {post.PostLike.length}
-                  dislikes = {post.PostDislike.length}
+                  likes={post.PostLike.length}
+                  dislikes={post.PostDislike.length}
                 />
               ))}
           </div>
         </div>
 
-        <div className=" p-4 bg-slate-100 rounded-xl ml-2 hidden md:block min-h-96 max-h-[700px]">
+        <aside className=" p-4 bg-slate-100 rounded-xl ml-2 hidden md:block min-h-96 max-h-[700px]">
           <h2 className="text-2xl font-bold mb-6">Group Description</h2>
           <p className="">{group.description}</p>
-        </div>
-      </div>
+        </aside>
+      </main>
     </div>
   );
 }

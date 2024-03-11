@@ -3,15 +3,18 @@ import React, { useState, useEffect } from "react";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import numeral from "numeral";
 import { useParams } from "next/navigation";
+import { ImSpinner2 } from "react-icons/im";
+
 function DislikeButton({ difference, commentId }) {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [likeDislikeDiff, setLikeDislikeDiff] = useState(difference);
-
+  const [loading, setLoading] = useState(false);
   const params = useParams();
   const { groupId, postId } = params;
 
   useEffect(() => {
+    setLoading(true);
     const fetchLikeStatus = async () => {
       const res = await fetch(
         `/api/groups/${groupId}/posts/${postId}/comments/${commentId}/likeStatus`
@@ -22,6 +25,7 @@ function DislikeButton({ difference, commentId }) {
       } else if (data.likeStatus === "dislike") {
         setDisliked(true);
       }
+      setLoading(false);
     };
     fetchLikeStatus();
   }, [commentId, groupId, postId]);
@@ -67,7 +71,11 @@ function DislikeButton({ difference, commentId }) {
     }
   };
 
-  return (
+  return loading ? (
+    <div className="px-8 w-16 py-1 rounded-full border border-black text-center">
+      <ImSpinner2 className="animate-spin"/>
+    </div>
+  ) : (
     <div
       className={`flex items-center gap-2  px-2 rounded-full border border-black ${
         liked ? "bg-red-500" : disliked ? "bg-violet-500" : "bg-white"

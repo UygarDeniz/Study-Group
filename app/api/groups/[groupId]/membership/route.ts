@@ -10,14 +10,19 @@ export async function GET(
   { params }: { params: { groupId: string } }
 ) {
   const session = await getServerSession(options);
+  
+  if (!session) {
+    return NextResponse.json({ isMember: false });
+  }
   const userId: number = session.user.id;
   const groupId = params.groupId;
+
   const membership = await prisma.groupMember.findFirst({
     where: {
       userId: userId,
       groupId: Number(groupId),
     },
   });
-
+  console.log(Boolean(membership));
   return NextResponse.json({ isMember: Boolean(membership) });
 }
