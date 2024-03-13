@@ -7,48 +7,52 @@ Technologies: Next.js, Typescript, MySQL, Prisma, Tailwind CSS
 MVP bold
 Requirements:
 
--   **Landing Page**
-    - **Hot Groups**
--   **Authentication**
-    - **Email**
-    - Google
-    - Github
+- **Landing Page**
+  - **Hot Groups**
+- **Authentication**
+  - **Email**
+  - Google
+  - Github
 - **Study Group**
-    - **Group creation**
-    - **Join a study group**
-    - **Discussion Board**
-    - **Search for a group - Invite to a study group**
-    - Resource Sharing (Notes etc)
-    - Zoom or Google Meet Video Sharing
-    - Study session
-    - Spotify playlist selection
-        - Vote for favorite musics to go up at the list
+  - **Group creation**
+  - **Join a study group**
+  - **Discussion Board**
+  - **Search for a group - Invite to a study group**
+  - Resource Sharing (Notes etc)
+  - Zoom or Google Meet Video Sharing
+  - Study session
+  - Spotify playlist selection
+    - Vote for favorite musics to go up at the list
 
 # TODO
- - 1 
-    - [x] Join functionalty
-    - [x] Leave functionalty
-    
- - 2 
-    - [x] like post
-    - [x] like comment
+
+- 1
+  - [x] Join functionalty
+  - [x] Leave functionalty
+- 2
+
+  - [x] like post
+  - [x] like comment
 
 - 3
-    - [x] Profile
-        - [x] info
-        - [x] Joined Groups
-        - [x] update settings
+
+  - [x] Profile
+    - [x] info
+    - [x] Joined Groups
+    - [x] update settings
 
 - 4
-    - [x] search functionalty
+  - [x] search functionalty
 
-- 5 
-    - [ ] file upload
-    - [ ] avatar upload
+- 5
+  - [ ] implement infinite scrolling or pagination to comments/posts
+
 - 6
-    - [ ] livechat
+  - [ ] share file
+  - [ ] avatar upload
+- 6
 
-- 7 
-    - [ ] zoom and seassion things
+  - [ ] livechat
 
-
+- 7
+  - [ ] zoom and seassion things
