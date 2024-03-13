@@ -38,9 +38,9 @@ Requirements:
         - [x] info
         - [x] Joined Groups
         - [x] update settings
-        - [ ] liked posts, comments
+
 - 4
-    - [ ] search functionalty
+    - [x] search functionalty
 
 - 5 
     - [ ] file upload
