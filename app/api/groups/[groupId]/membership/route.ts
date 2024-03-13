@@ -23,6 +23,6 @@ export async function GET(
       groupId: Number(groupId),
     },
   });
-  console.log(Boolean(membership));
+  
   return NextResponse.json({ isMember: Boolean(membership) });
 }
