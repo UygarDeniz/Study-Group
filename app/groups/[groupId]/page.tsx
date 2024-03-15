@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import GroupImage from "../../(components)/GroupImage";
-import { FaPlus } from "react-icons/fa6";
+import { FaArrowLeft, FaArrowRight, FaPlus } from "react-icons/fa6";
 import Post from "../../(components)/Post";
 import NewPost from "../../(components)/NewPost";
 import JoinButton from "../../(components)/JoinLeaveButton";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 type Params = {
   groupId: string;
@@ -45,15 +47,19 @@ type Group = {
 export default function GroupPage({ params }: Props) {
   const [sort, setSort] = useState("latest");
   const [showNewPostForm, setShowNewPostForm] = useState(false);
-  const [group, setGroup] = useState<Group >({} as Group);
- 
+  const [group, setGroup] = useState<Group>({} as Group);
+
+  const searchParams = useSearchParams();
+  const page = parseInt(searchParams.get("page"));
 
   const { groupId } = params;
 
   useEffect(() => {
     const getPosts = async () => {
       try {
-        const res = await fetch(`/api/groups/${groupId}`);
+        const res = await fetch(
+          `/api/groups/${groupId}?page=${page}&sort=${sort}&includePosts=true`
+        );
         const data = await res.json();
         data.group.image = data.group.image || "/group1.jpg";
         setGroup(data.group);
@@ -62,12 +68,8 @@ export default function GroupPage({ params }: Props) {
       }
     };
     getPosts();
-  }, []);
+  }, [page]);
 
-  
-
-
-  
   return (
     <div className="max-w-screen-xl mx-auto min-h-screen">
       {showNewPostForm && (
@@ -128,7 +130,8 @@ export default function GroupPage({ params }: Props) {
 
           <hr />
           <div>
-            {group.Post &&
+            {group.Post?.length !== 0 ? (
+              group.Post &&
               group.Post.map((post) => (
                 <Post
                   key={post.id}
@@ -140,7 +143,28 @@ export default function GroupPage({ params }: Props) {
                   likes={post.PostLike.length}
                   dislikes={post.PostDislike.length}
                 />
-              ))}
+              ))
+            ) : (
+              <div className="flex justify-center items-center h-[50vh]">
+                <h1 className="text-3xl font-bold text-gray-500">
+                  No post found
+                </h1>
+              </div>
+            )}
+          </div>
+          <div className="flex  justify-center mt-12">
+            <Link
+              href={`/groups/${groupId}?page=${page > 1 ? page - 1 : 1}`}
+              className="border border-black py-2 px-4"
+            >
+              <FaArrowLeft />
+            </Link>
+            <Link
+              href={`/groups/${groupId}?page=${page + 1}`}
+              className="border border-black py-2 px-4 "
+            >
+              <FaArrowRight />
+            </Link>
           </div>
         </div>
 

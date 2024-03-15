@@ -1,13 +1,16 @@
-import React from "react";
+"use client";
+
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import GroupImageMd from "../../../../(components)/GroupImageMd";
 import Link from "next/link";
-import { PrismaClient } from "@prisma/client";
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
+
 import { formatDistanceToNow } from "date-fns";
 import NewComment from "@/app/(components)/NewComment";
 import Comment from "@/app/(components)/Comment";
 import JoinButton from "@/app/(components)/JoinLeaveButton";
+import usePost from "@/app/hooks/useComments";
+
+import { ImSpinner2 } from "react-icons/im";
 
 type Params = {
   groupId: string;
@@ -56,35 +59,66 @@ type Group = {
   description: string;
 };
 
-async function Post({ params }: Props) {
+function Post({ params }: Props) {
   const { groupId, postId } = params;
-  const prisma = new PrismaClient();
-  const session = await getServerSession(options);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [group, setGroup] = useState<Group>();
+  const { results, loading, error, isError, hasNextPage } = usePost(
+    pageNumber,
+    groupId,
+    postId
+  );
+  const observer = useRef<IntersectionObserver | undefined>();
+  const lastCommentElementRef = useCallback(
+    (commentElement: HTMLElement | null) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          setPageNumber((prevPageNumber) => prevPageNumber + 1);
+        }
+      });
+      if (commentElement) observer.current.observe(commentElement);
+    },
+    [loading, hasNextPage]
+  );
 
-  const post = await prisma.post.findUnique({
-    where: {
-      id: Number(postId),
-    },
-    include: {
-      Comment: {
-        include: {
-          author: true,
-          CommentDislike: true,
-          CommentLike: true,
-        },
-      },
-    },
+  const content = results?.Comment?.map((comment, i) => {
+    if (results.Comment.length === i + 1) {
+      return (
+        <Comment
+          key={comment.id}
+          id={comment.id}
+          name={comment.author.name}
+          date={comment.createdAt}
+          content={comment.content}
+          likes={comment.CommentLike.length}
+          dislikes={comment.CommentDislike.length}
+          ref={lastCommentElementRef}
+        />
+      );
+    }
+    return (
+      <Comment
+        key={comment.id}
+        id={comment.id}
+        name={comment.author.name}
+        date={comment.createdAt}
+        content={comment.content}
+        likes={comment.CommentLike.length}
+        dislikes={comment.CommentDislike.length}
+      />
+    );
   });
-  const group: Group = await prisma.group.findUnique({
-    where: {
-      id: Number(groupId),
-    },
-  });
-  const user: User = await prisma.user.findUnique({
-    where: {
-      id: session.user.id,
-    },
-  });
+
+  useEffect(() => {
+    const fetchGroup = async () => {
+      const res = await fetch(`/api/groups/${groupId}?includePosts=false`);
+      const data = await res.json();
+      setGroup(data.group);
+    };
+    fetchGroup();
+  }, [groupId]);
 
   return (
     <div className=" max-w-screen-xl mx-auto mt-10 min-h-screen">
@@ -96,36 +130,35 @@ async function Post({ params }: Props) {
               <div>
                 <div className="flex items-center gap-3">
                   <Link href={`/groups/${groupId}`} className="text-lg mt-0.5">
-                    {group.name}
+                    {group?.name}
                   </Link>
                   <h2 className="text-gray-500">
-                    {formatDistanceToNow(new Date(post.createdAt))}
+                    {formatDistanceToNow(results?.createdAt ? new Date(results?.createdAt) : new Date())} 
                   </h2>
                 </div>
-                <h1>{user.name}</h1>
+                <h1>{results?.author?.name}</h1>
               </div>
             </div>
             <JoinButton groupId={groupId} />
           </div>
-          <h2 className="text-3xl mb-10 mt-4">{post.title}</h2>
+          <h2 className="text-3xl mb-10 mt-4">{results?.title}</h2>
           <hr className="m-2" />
           <NewComment postId={postId} groupId={groupId} />
-          {post.Comment.map((comment) => (
-            <Comment
-              key={comment.id}
-              id={comment.id}
-              username={comment.author.name}
-              date={comment.createdAt}
-              content={comment.content}
-              likes={comment.CommentLike.length}
-              dislikes={comment.CommentDislike.length}
-            />
-          ))}
+          {content}
+          {loading && (
+            <div className="flex justify-center mt-4">
+              <ImSpinner2 className="animate-spin  text-2xl" />
+            </div>
+          )}
+
+          <p className="text-center text-lg mt-2">
+            <a href="#top">Back to Top</a>
+          </p>
         </div>
 
         <aside className=" p-4 bg-slate-100 rounded-xl ml-2 hidden md:block max-h-[700px]">
           <h2 className="text-2xl font-bold mb-6">Group Description</h2>
-          <p className="">{group.description}</p>
+          <p className="">{group?.description}</p>
         </aside>
       </main>
     </div>

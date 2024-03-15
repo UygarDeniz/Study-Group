@@ -5,26 +5,36 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 
 const prisma = new PrismaClient();
 export async function GET(
-  res: NextResponse,
+  req: NextRequest,
 
   { params }: { params: { groupId: string } }
 ) {
   const { groupId } = params;
 
+  const searchParams = req.nextUrl.searchParams;
+  const page = parseInt(searchParams.get("page")) || 1;
+  const includePosts = searchParams.get("includePosts");
+  const sort = searchParams.get("sort");
+  
+  const pageSize = 6;
   const foundGroup = await prisma.group.findUnique({
     where: {
       id: Number(groupId),
     },
     include: {
-      Post: {
-        include: {
-          PostLike: true,
-          PostDislike: true,
-        },
-      },
+      Post:
+        includePosts === "true"
+          ? {
+              include: {
+                PostLike: true,
+                PostDislike: true,
+              },
+              take: pageSize,
+              skip: page > 1 ? (page - 1) * pageSize : 0,
+            }
+          : false,
     },
   });
- 
 
   return NextResponse.json({ group: foundGroup });
 }
