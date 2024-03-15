@@ -45,7 +45,7 @@ Requirements:
   - [x] search functionalty
 
 - 5
-  - [ ] implement infinite scrolling or pagination to comments/posts
+  - [x] implement infinite scrolling or pagination to comments/posts
 
 - 6
   - [ ] share file
