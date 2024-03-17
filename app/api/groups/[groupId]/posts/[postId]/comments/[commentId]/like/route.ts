@@ -4,48 +4,59 @@ import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 
 const prisma = new PrismaClient();
+
 export async function POST(req: NextRequest, { params }) {
-  const { groupId, postId } = params;
+  const { commentId } = params;
 
   try {
     const session = await getServerSession(options);
     const userId: number = session.user.id;
 
-    const existingDislike = await prisma.postDislike.findFirst({
+    // Check if the user has already disliked the comment
+    const existingDislike = await prisma.commentDislike.findFirst({
       where: {
         userId: userId,
-        postId: Number(postId),
+        commentId: Number(commentId),
       },
     });
 
+    // If the user has already disliked the comment, remove the dislike and add a like
     if (existingDislike) {
-      await prisma.postDislike.delete({
+      await prisma.commentDislike.delete({
         where: {
           id: existingDislike.id,
         },
       });
-    }
-
-    const existingLike = await prisma.postLike.findFirst({
-      where: {
-        userId: userId,
-        postId: Number(postId),
-      },
-    });
-
-    if (existingLike) {
-      await prisma.postLike.delete({
-        where: {
-          id: existingLike.id,
+      await prisma.commentLike.create({
+        data: {
+          userId: userId,
+          commentId: Number(commentId),
         },
       });
     } else {
-      await prisma.postLike.create({
-        data: {
+      // Check if the user has already liked the comment
+      const existingLike = await prisma.commentLike.findFirst({
+        where: {
           userId: userId,
-          postId: Number(postId),
+          commentId: Number(commentId),
         },
       });
+
+      // If the user has already liked the comment, remove the like
+      if (existingLike) {
+        await prisma.commentLike.delete({
+          where: {
+            id: existingLike.id,
+          },
+        });
+      } else {
+        await prisma.commentLike.create({
+          data: {
+            userId: userId,
+            commentId: Number(commentId),
+          },
+        });
+      }
     }
 
     return NextResponse.json({ status: 200 });

@@ -4,13 +4,9 @@ import GroupCard from "./(components)/GroupCard";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-type Group = {
-  id: number;
-  name: string;
-  description: string;
-};
+
 export default async function Home() {
-  const groups: Group[] = await prisma.group.findMany();
+  const groups = await prisma.group.findMany();
   return (
     <main className="flex  flex-col ">
       <section className="flex text-center lg:text-left ">

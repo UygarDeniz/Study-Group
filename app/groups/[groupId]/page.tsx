@@ -7,7 +7,7 @@ import NewPost from "../../(components)/NewPost";
 import JoinButton from "../../(components)/JoinLeaveButton";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-
+import { useQuery } from "@tanstack/react-query";
 type Params = {
   groupId: string;
 };
@@ -44,32 +44,36 @@ type Group = {
   description: string;
 };
 
+const fetchGroupPosts = async ({ queryKey }) => {
+  const [_key, groupId, page, sort] = queryKey;
+  const res = await fetch(
+    `/api/groups/${groupId}?page=${page}&sort=${sort}&includePosts=true`
+  );
+  if (!res.ok) {
+    throw new Error("Network response was not ok");
+  }
+  const data = await res.json();
+  data.group.image =  data.group.image || "/group1.jpg";
+  return data.group;
+};
+
 export default function GroupPage({ params }: Props) {
   const [sort, setSort] = useState("latest");
   const [showNewPostForm, setShowNewPostForm] = useState(false);
-  const [group, setGroup] = useState<Group>({} as Group);
 
   const searchParams = useSearchParams();
   const page = parseInt(searchParams.get("page"));
 
   const { groupId } = params;
-
-  useEffect(() => {
-    const getPosts = async () => {
-      try {
-        const res = await fetch(
-          `/api/groups/${groupId}?page=${page}&sort=${sort}&includePosts=true`
-        );
-        const data = await res.json();
-        data.group.image = data.group.image || "/group1.jpg";
-        setGroup(data.group);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    getPosts();
-  }, [page]);
-
+  const {
+    data: group,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ["groupPosts", groupId, page, sort],
+    queryFn: fetchGroupPosts,
+  });
+  if (isPending) return <p>Loading...</p>;
   return (
     <div className="max-w-screen-xl mx-auto min-h-screen">
       {showNewPostForm && (

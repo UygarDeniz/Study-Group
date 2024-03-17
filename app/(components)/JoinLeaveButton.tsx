@@ -1,45 +1,72 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-
+import React from "react";
 import { ImSpinner2 } from "react-icons/im";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 type JoinButtonProps = {
   groupId: string;
   color?: string;
 };
 
-function JoinButton({ groupId, color }: JoinButtonProps) {
-  const [isMember, setIsMember] = useState(false);
-  const [loading, setLoading] = useState(true);
+const fetchMembership = async (groupId) => {
+  const res = await fetch(`/api/groups/${groupId}/membership`);
+  if (!res.ok) {
+    throw new Error("Network response was not ok");
+  }
+  const data = await res.json();
+  return data.isMember;
+};
 
+const joinGroup = async (groupId) => {
+  const res = await fetch(`/api/groups/${groupId}/join`, { method: "POST" });
+  if (!res.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return res.json();
+};
+
+const leaveGroup = async (groupId) => {
+  const res = await fetch(`/api/groups/${groupId}/leave`, { method: "POST" });
+  if (!res.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return res.json();
+};
+
+function JoinButton({ groupId, color }: JoinButtonProps) {
+  const queryClient = useQueryClient();
   const buttonColor =
     color === "red"
       ? "bg-red-500 hover:bg-red-600"
       : "bg-black hover:bg-gray-700";
 
-  useEffect(() => {
-    const checkMembership = async () => {
-      const res = await fetch(`/api/groups/${groupId}/membership`);
-      const data = await res.json();
-      setIsMember(data.isMember);
-      setLoading(false);
-    };
-    checkMembership();
-  }, [groupId]);
+      const { data: isMember, isPending } = useQuery({
+        queryKey: ["membership", groupId],
+        queryFn: () => fetchMembership(groupId),
+      });
+    
+      const joinMutation = useMutation({
+        mutationFn: () => joinGroup(groupId),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["membership", groupId] });
+        },
+      });
+    
+      const leaveMutation = useMutation({
+        mutationFn: () => leaveGroup(groupId),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["membership", groupId] });
+        },
+      });
+    
 
-  const handleJoin = async () => {
-    const res = await fetch(`/api/groups/${groupId}/join`, { method: "POST" });
-    if (res.ok) {
-      setIsMember(true);
-    }
+  const handleJoin = () => {
+    joinMutation.mutate();
   };
 
-  const handleLeave = async () => {
-    const res = await fetch(`/api/groups/${groupId}/leave`, { method: "POST" });
-    if (res.ok) {
-      setIsMember(false);
-    }
+  const handleLeave = () => {
+    leaveMutation.mutate();
   };
 
   return !isMember ? (
@@ -47,7 +74,7 @@ function JoinButton({ groupId, color }: JoinButtonProps) {
       onClick={handleJoin}
       className={`md:text-lg px-6 py-1 rounded-3xl transition-colors duration-200 ease-in-out text-white  hover:text-white ${buttonColor}`}
     >
-      {loading ? (
+      {isPending ? (
         <div className="px-4 py-1">
           <ImSpinner2 className="text-lg animate-spin" />
         </div>
@@ -60,7 +87,7 @@ function JoinButton({ groupId, color }: JoinButtonProps) {
       onClick={handleLeave}
       className={`md:text-lg px-6 py-1 rounded-3xl transition-colors duration-200 ease-in-out text-white  hover:text-white ${buttonColor}`}
     >
-      {loading ? <ImSpinner2 className="text-2xl animate-spin " /> : "Leave"}
+      {isPending ? <ImSpinner2 className="text-2xl animate-spin " /> : "Leave"}
     </button>
   );
 }

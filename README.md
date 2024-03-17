@@ -26,33 +26,35 @@ Requirements:
 
 # TODO
 
-- 1
-  - [x] Join functionalty
-  - [x] Leave functionalty
-- 2
+- [x] Join functionalty
+- [x] Leave functionalty
 
-  - [x] like post
-  - [x] like comment
+- [x] like post
+- [x] like comment
 
-- 3
+- [x] Profile
 
-  - [x] Profile
-    - [x] info
-    - [x] Joined Groups
-    - [x] update settings
+  - [x] info
+  - [x] Joined Groups
+  - [x] update settings
 
-- 4
-  - [x] search functionalty
+- [x] search functionalty
 
-- 5
-  - [x] implement infinite scrolling or pagination to comments/posts
+- [x] react query
 
-- 6
-  - [ ] share file
-  - [ ] avatar upload
-- 6
+- [x] implement infinite scrolling or pagination to comments/posts
 
-  - [ ] livechat
 
-- 7
-  - [ ] zoom and seassion things
+- [ ] view profiles
+
+- [ ] group settings for admins
+- [ ] add remove admin
+
+- [ ] feed
+
+- [ ] share file
+- [ ] avatar upload
+
+- [ ] livechat
+
+- [ ] zoom/google meets and study seassion

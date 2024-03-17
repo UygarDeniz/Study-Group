@@ -6,32 +6,54 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest, { params }) {
-  const { groupId, postId } = params;
+  const { postId } = params;
 
   try {
     const session = await getServerSession(options);
     const userId: number = session.user.id;
 
-    const existingLike = await prisma.postLike.findFirst({
+    const existingDislike = await prisma.postDislike.findFirst({
       where: {
         userId: userId,
         postId: Number(postId),
       },
     });
 
-    if (existingLike) {
-      await prisma.postLike.delete({
+    if (existingDislike) {
+      await prisma.postDislike.delete({
         where: {
-          id: existingLike.id,
+          id: existingDislike.id,
         },
       });
-    } else {
+
       await prisma.postLike.create({
         data: {
           userId: userId,
           postId: Number(postId),
         },
       });
+    } else {
+      const existingLike = await prisma.postLike.findFirst({
+        where: {
+          userId: userId,
+          postId: Number(postId),
+        },
+      });
+
+      if (existingLike) {
+        await prisma.postLike.delete({
+          where: {
+            id: existingLike.id,
+          },
+        });
+      } else {
+        await prisma.postLike.create({
+          data: {
+            userId: userId,
+            postId: Number(postId),
+          },
+        });
+      }
     }
 
     return NextResponse.json({ status: 200 });

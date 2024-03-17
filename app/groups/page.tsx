@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa";
-
+import GroupCardSection from "../(components)/GroupCardSection";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +15,7 @@ type Group = {
   description: string;
 };
 async function getGroups(name: string, page: number) {
-  const pageSize = 4;
+  const pageSize = 5;
   const groups: Group[] = await prisma.group.findMany({
     where: {
       name: {
@@ -63,38 +63,41 @@ export default async function Groups({ searchParams }) {
           </form>
         </div>
       </div>
+
       {groups.length !== 0 ? (
         <>
-          <section className=" flex flex-wrap justify-center py-20 mt-6 mx-6 lg:mx-28 gap-6">
-            {groups.map((group) => (
-              <GroupCard
-                key={group.name}
-                id={group.id.toString()}
-                name={group.name}
-                description={group.description}
-              />
-            ))}
+          <section className="flex flex-col items-center py-20 my-6 mx-6 lg:mx-28">
+            <div className="flex flex-wrap justify-center gap-10 mt-20 ">
+              {groups.map((group) => (
+                <GroupCard
+                  key={group.id}
+                  id={group.id.toString()}
+                  name={group.name}
+                  description={group.description}
+                />
+              ))}
+            </div>
           </section>
-          <div className="flex  justify-center">
-            <Link
-              href={`/groups?page=${page > 1 ? page - 1 : 1}`}
-              className="border border-black py-2 px-4"
-            >
-              <FaArrowLeft />
-            </Link>
-            <Link
-              href={`/groups?page=${page + 1}`}
-              className="border border-black py-2 px-4 "
-            >
-              <FaArrowRight />
-            </Link>
-          </div>
         </>
       ) : (
         <div className="flex justify-center items-center h-[50vh]">
           <h1 className="text-3xl font-bold text-gray-500">No groups found</h1>
         </div>
       )}
+      <div className="flex  justify-center">
+        <Link
+          href={`/groups?page=${page > 1 ? page - 1 : 1}`}
+          className="border border-black py-2 px-4"
+        >
+          <FaArrowLeft />
+        </Link>
+        <Link
+          href={`/groups?page=${page + 1}`}
+          className="border border-black py-2 px-4 "
+        >
+          <FaArrowRight />
+        </Link>
+      </div>
     </main>
   );
 }

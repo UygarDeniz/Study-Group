@@ -1,7 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
+const changePassword = async ({ password, newPassword, confirmPassword }) => {
+  const res = await fetch("/api/profile/changepassword", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password, newPassword, confirmPassword }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.message);
+  }
+
+  return res.json();
+};
 function ChangePassword() {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -14,29 +31,21 @@ function ChangePassword() {
       return;
     }
 
-    try {
-      const res = await fetch("/api/profile/changepassword", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password, newPassword, confirmPassword }),
-      });
-
-      if (res.ok) {
-        alert("Password Changed");
-        setPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      } else {
-        const data = await res.json();
-        alert(data.message);
-      }
-    } catch (error) {
+    mutation.mutate({ password, newPassword, confirmPassword });
+  };
+  const mutation = useMutation({
+    mutationFn: changePassword,
+    onSuccess: () => {
+      alert("Password Changed");
+      setPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    },
+    onError: (error) => {
       console.error("An error occurred:", error);
       alert("An error occurred. Please try again.");
-    }
-  };
+    },
+  });
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center">

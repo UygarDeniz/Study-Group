@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 interface UserInfo {
   name: string;
@@ -8,49 +9,75 @@ interface UserInfo {
   bio: string;
 }
 
+const fetchUser = async () => {
+  const res = await fetch("/api/profile");
+  if (!res.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return res.json();
+};
+
+const updateUser = async (userInfo: UserInfo) => {
+  const res = await fetch("/api/profile", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userInfo),
+  });
+
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.message);
+  }
+
+  return res.json();
+};
+
 function EditProfile() {
-  const [userInfo, setUserInfo] = useState<UserInfo>({
+  const [userProfile, setUserProfile] = useState<UserInfo>({
     name: "",
     email: "",
     bio: "",
   });
 
+  const { data, isPending, isError } = useQuery({
+    queryKey: ["user"],
+    queryFn: fetchUser,
+  });
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/profile");
-        const data = await res.json();
-        setUserInfo(data);
-      } catch (error) {
-        console.error("An error occurred:", error);
-      }
-    };
-    fetchUser();
-  }, []);
+    if (data) {
+      setUserProfile(data);
+    }
+  }, [data]);
+
+  const mutation = useMutation({
+    mutationFn: updateUser,
+    onSuccess: (data) => {
+      alert("Profile Updated");
+      setUserProfile(data);
+    },
+    onError: (error) => {
+      console.error("An error occurred:", error);
+      alert("An error occurred. Please try again.");
+    },
+  });
 
   const changeUserSettings = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!userInfo.name || !userInfo.email) {
+    if (!userProfile.name || !userProfile.email) {
       alert("Missing name or email");
       return;
     }
 
-    try {
-      const res = await fetch("/api/profile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userInfo),
-      });
-      const data: UserInfo = await res.json();
-      res.ok ? alert("Profile Updated") : alert("Error");
-      res.ok && setUserInfo(data);
-    } catch (error) {
-      console.error("An error occurred:", error);
-    }
+    mutation.mutate(userProfile);
   };
+
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center ">
       <div className="bg-white  px-2 py-6 sm:p-20  w-full md:w-[600px] rounded-2xl shadow-lg">
@@ -65,11 +92,11 @@ function EditProfile() {
           <div className="relative">
             <input
               type="name"
-              value={userInfo.name}
+              value={userProfile.name}
               name="name"
               className="  w-full border-2 py-8 px-2 border-gray-800 text-gray-900  focus:outline-none focus:border-rose-600"
               onChange={(e) =>
-                setUserInfo({ ...userInfo, name: e.target.value })
+                setUserProfile({ ...userProfile, name: e.target.value })
               }
               required
             />
@@ -83,14 +110,15 @@ function EditProfile() {
           <div className="relative">
             <input
               type="email"
-              value={userInfo.email}
+              value={userProfile.email}
               name="email"
               className=" w-full border-2 py-8 px-2 border-gray-800 text-gray-900 focus:outline-none focus:border-rose-600"
               onChange={(e) =>
-                setUserInfo({ ...userInfo, email: e.target.value })
+                setUserProfile({ ...userProfile, email: e.target.value })
               }
               required
             />
+
             <label
               htmlFor="email"
               className="absolute left-3  top-0 text-gray-600 text-md "
@@ -101,11 +129,11 @@ function EditProfile() {
           <div className="relative">
             <textarea
               name="bio"
-              value={userInfo.bio}
+              value={userProfile.bio}
               className="peer w-full border-2 py-8 px-2 border-gray-800 text-gray-900  focus:outline-none focus:border-rose-600"
               maxLength={250}
               onChange={(e) =>
-                setUserInfo({ ...userInfo, bio: e.target.value })
+                setUserProfile({ ...userProfile, bio: e.target.value })
               }
             />
             <label

@@ -11,6 +11,17 @@ import JoinButton from "@/app/(components)/JoinLeaveButton";
 import usePost from "@/app/hooks/useComments";
 
 import { ImSpinner2 } from "react-icons/im";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchGroup = async (groupId) => {
+  const res = await fetch(`/api/groups/${groupId}?includePosts=false`);
+  if (!res.ok) {
+    throw new Error("Network response was not ok");
+  }
+  const data = await res.json();
+  
+  return data.group;
+};
 
 type Params = {
   groupId: string;
@@ -62,7 +73,7 @@ type Group = {
 function Post({ params }: Props) {
   const { groupId, postId } = params;
   const [pageNumber, setPageNumber] = useState(1);
-  const [group, setGroup] = useState<Group>();
+  
   const { results, loading, error, isError, hasNextPage } = usePost(
     pageNumber,
     groupId,
@@ -111,14 +122,12 @@ function Post({ params }: Props) {
     );
   });
 
-  useEffect(() => {
-    const fetchGroup = async () => {
-      const res = await fetch(`/api/groups/${groupId}?includePosts=false`);
-      const data = await res.json();
-      setGroup(data.group);
-    };
-    fetchGroup();
-  }, [groupId]);
+  const { data: group, isPending } = useQuery({
+    queryKey: ["group", groupId],
+    queryFn: () => fetchGroup(groupId),
+    staleTime: 1000 * 60 * 5,
+   
+  });
 
   return (
     <div className=" max-w-screen-xl mx-auto mt-10 min-h-screen">
@@ -133,7 +142,11 @@ function Post({ params }: Props) {
                     {group?.name}
                   </Link>
                   <h2 className="text-gray-500">
-                    {formatDistanceToNow(results?.createdAt ? new Date(results?.createdAt) : new Date())} 
+                    {formatDistanceToNow(
+                      results?.createdAt
+                        ? new Date(results?.createdAt)
+                        : new Date()
+                    )}
                   </h2>
                 </div>
                 <h1>{results?.author?.name}</h1>
