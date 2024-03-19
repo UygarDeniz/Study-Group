@@ -2,9 +2,12 @@ import React from "react";
 import createGroup from "../../actions/actions";
 function NewGroup() {
   return (
-    <div className="flex flex-col items-center justify-center mt-20 w-3/5 mx-auto p-6 ">
-      <h1 className="text-3xl font-bold mb-4">Create a new group</h1>
-      <form action={createGroup} className="space-y-4 w-1/2">
+    <div className="flex flex-col items-center justify-center  mx-auto p-6  h-screen bg-gray-100">
+      <form
+        action={createGroup}
+        className="space-y-4  bg-white shadow-lg py-20 px-16 rounded-xl"
+      >
+        <h1 className="text-2xl font-semibold text-gray-500 mb-10">Create a new group</h1>
         <div>
           <label htmlFor="name" className="text-lg font-bold">
             Group Name
@@ -13,7 +16,7 @@ function NewGroup() {
             type="text"
             name="name"
             className="w-full p-2 border-2 border-black rounded-lg"
-            maxLength={50}
+            maxLength={20}
             required
           />
         </div>
@@ -26,7 +29,7 @@ function NewGroup() {
             className="resize-none w-full p-2 border-2 border-black rounded-lg"
             name="description"
             rows={10}
-            maxLength={200}
+            maxLength={255}
             required
           ></textarea>
         </div>

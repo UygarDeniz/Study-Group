@@ -19,7 +19,7 @@ const fetchGroup = async (groupId) => {
     throw new Error("Network response was not ok");
   }
   const data = await res.json();
-  
+
   return data.group;
 };
 
@@ -73,7 +73,7 @@ type Group = {
 function Post({ params }: Props) {
   const { groupId, postId } = params;
   const [pageNumber, setPageNumber] = useState(1);
-  
+
   const { results, loading, error, isError, hasNextPage } = usePost(
     pageNumber,
     groupId,
@@ -103,6 +103,7 @@ function Post({ params }: Props) {
           name={comment.author.name}
           date={comment.createdAt}
           content={comment.content}
+          authorId={comment.author.id}
           likes={comment.CommentLike.length}
           dislikes={comment.CommentDislike.length}
           ref={lastCommentElementRef}
@@ -114,6 +115,7 @@ function Post({ params }: Props) {
         key={comment.id}
         id={comment.id}
         name={comment.author.name}
+        authorId={comment.author.id}
         date={comment.createdAt}
         content={comment.content}
         likes={comment.CommentLike.length}
@@ -126,7 +128,6 @@ function Post({ params }: Props) {
     queryKey: ["group", groupId],
     queryFn: () => fetchGroup(groupId),
     staleTime: 1000 * 60 * 5,
-   
   });
 
   return (
@@ -135,10 +136,18 @@ function Post({ params }: Props) {
         <div className="col-span-4 ">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <GroupImageMd image="/group2.jpg" />
+              <Link
+                href={`/groups/${groupId}`}
+                className="text-lg mt-0.5 font-semibold"
+              >
+                <GroupImageMd image="/group2.jpg" />
+              </Link>
               <div>
                 <div className="flex items-center gap-3">
-                  <Link href={`/groups/${groupId}`} className="text-lg mt-0.5">
+                  <Link
+                    href={`/groups/${groupId}`}
+                    className="text-lg mt-0.5 font-semibold"
+                  >
                     {group?.name}
                   </Link>
                   <h2 className="text-gray-500">
@@ -149,12 +158,15 @@ function Post({ params }: Props) {
                     )}
                   </h2>
                 </div>
-                <h1>{results?.author?.name}</h1>
+                <Link href={`/profile/${results?.author?.id}`}>
+                  <h1>{results?.author?.name}</h1>
+                </Link>
               </div>
             </div>
             <JoinButton groupId={groupId} />
           </div>
-          <h2 className="text-3xl mb-10 mt-4">{results?.title}</h2>
+          <h2 className="text-3xl  mt-2 font-semibold">{results?.title}</h2>
+          <p className="text-xl mb-10 mt-6 text-gray-600">{results?.content}</p>
           <hr className="m-2" />
           <NewComment postId={postId} groupId={groupId} />
           {content}

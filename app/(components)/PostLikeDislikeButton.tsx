@@ -108,7 +108,7 @@ function PostLikeDislikeButton({ difference, postId }) {
   }
   return (
     <div
-      className={`flex max-w-20  items-center gap-2  px-2 rounded-full border border-black ${
+      className={`flex max-w-20  items-center gap-2  px-2 rounded-full border border-gray-800 ${
         liked ? "bg-red-500" : disliked ? "bg-violet-500" : "bg-white"
       }`}
     >
@@ -116,7 +116,7 @@ function PostLikeDislikeButton({ difference, postId }) {
         onClick={handleLike}
         className={` cursor-pointer ${liked ? "text-white" : "text-black"}`}
       />
-      <p className={` ${liked || disliked ? "text-white " : "text-black"}`}>
+      <p className={` ${liked || disliked ? "text-white " : "text-gray-800"}`}>
         {numeral(likeDislikeDiff).format(
           likeDislikeDiff % 1000 === 0 || likeDislikeDiff < 1000 ? "0a" : "0.0a"
         )}
@@ -124,7 +124,7 @@ function PostLikeDislikeButton({ difference, postId }) {
       <FaArrowDown
         onClick={handleDislike}
         className={` cursor-pointer  ${
-          disliked ? "text-white" : "text-black"
+          disliked ? "text-white" : "text-gray-800"
         } `}
       />
     </div>

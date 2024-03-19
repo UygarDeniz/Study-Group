@@ -1,182 +1,194 @@
-"use client";
-import { useState, useEffect } from "react";
 import GroupImage from "../../(components)/GroupImage";
 import { FaArrowLeft, FaArrowRight, FaPlus } from "react-icons/fa6";
 import Post from "../../(components)/Post";
-import NewPost from "../../(components)/NewPost";
 import JoinButton from "../../(components)/JoinLeaveButton";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-type Params = {
-  groupId: string;
-};
+import { getServerSession } from "next-auth";
+import { options } from "@/app/api/auth/[...nextauth]/options";
 
-type Props = {
-  params: Params;
-};
+import { PrismaClient } from "@prisma/client";
 
-type PostLike = {
-  postId: number;
-  userId: number;
-  like: boolean;
-};
+const prisma = new PrismaClient();
 
-type PostDislike = {
-  postId: number;
-  userId: number;
-  dislike: boolean;
-};
-type Post = {
-  id: number;
-  title: string;
-  content: string;
-  createdAt: Date;
-  PostLike: PostLike[];
-  PostDislike: PostDislike[];
-};
-
-type Group = {
-  id: string;
-  image?: string;
-  name: string;
-  Post?: Post[];
-  description: string;
-};
-
-const fetchGroupPosts = async ({ queryKey }) => {
-  const [_key, groupId, page, sort] = queryKey;
-  const res = await fetch(
-    `/api/groups/${groupId}?page=${page}&sort=${sort}&includePosts=true`
-  );
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
+const getGroup = async (groupId: string, page) => {
+  const pageSize = 6;
+  try {
+    const foundGroup = await prisma.group.findUnique({
+      where: {
+        id: Number(groupId),
+      },
+      include: {
+        Post: {
+          include: {
+            PostLike: true,
+            PostDislike: true,
+            author: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+          take: pageSize,
+          skip: page > 1 ? (page - 1) * pageSize : 0,
+        },
+        GroupMember: {
+          include: {
+            User: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        GroupAdmin: {
+          include: {
+            User: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return foundGroup;
+  } catch (error) {
+    console.error(error);
   }
-  const data = await res.json();
-  data.group.image =  data.group.image || "/group1.jpg";
-  return data.group;
 };
 
-export default function GroupPage({ params }: Props) {
-  const [sort, setSort] = useState("latest");
-  const [showNewPostForm, setShowNewPostForm] = useState(false);
-
-  const searchParams = useSearchParams();
-  const page = parseInt(searchParams.get("page"));
-
+export default async function GroupPage({ params, searchParams }) {
   const { groupId } = params;
-  const {
-    data: group,
-    isPending,
-    isError,
-  } = useQuery({
-    queryKey: ["groupPosts", groupId, page, sort],
-    queryFn: fetchGroupPosts,
-  });
-  if (isPending) return <p>Loading...</p>;
+
+  const page = parseInt(searchParams.page) || 1;
+  const sort = searchParams.sort || "latest";
+
+  const session = await getServerSession(options);
+  const { user } = session;
+
+  const group = await getGroup(groupId, page);
+
+  if (!group) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <h1 className="text-3xl font-bold">
+          Sorry, there is no group has this name
+        </h1>
+      </div>
+    );
+  }
+  const isAdmin = group.GroupAdmin.some((admin) => admin.userId === user.id);
   return (
-    <div className="max-w-screen-xl mx-auto min-h-screen">
-      {showNewPostForm && (
-        <div className="fixed inset-0 z-1 flex items-center justify-center bg-black bg-opacity-50">
-          <NewPost
-            groupId={group.id}
-            close={() => setShowNewPostForm(!showNewPostForm)}
-          />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
+      <div className="flex flex-col md:flex-row md:items-center justify-between py-6">
+        <div className="flex items-center space-x-4">
+          <GroupImage image="/group1.jpg" alt={group.name} />
+          <h1 className="text-3xl md:text-5xl font-bold">{group.name}</h1>
         </div>
-      )}
-
-      <div className="flex flex-col md:flex-row p-4 item-start md:items-center justify-between bg-gradient-to-b from-gray-100 to-white">
-        <div className="flex items-center">
-          <GroupImage image={group.image} alt={group.name} />
-
-          <h1 className="text-3xl md:text-5xl font-bold mx-6">{group.name}</h1>
-        </div>
-
-        <div className="flex gap-4 item-center mt-4 md:m-0">
+        <div className="flex space-x-4 mt-4 md:mt-0">
           <JoinButton groupId={groupId} />
-
-          <button
-            onClick={() => setShowNewPostForm(!showNewPostForm)}
-            className="flex items-center justify-center text-lg gap-1 border-2 border-black hover:bg-slate-300 rounded-3xl px-4 py-1 transition-colors duration-200 ease-in-out"
+          <Link
+            className="flex items-center hover:bg-gray-100 justify-center px-5 py-3 border-2 border-black text-base font-medium rounded text-gray-700 "
+            href={`/groups/${groupId}/new`}
           >
-            <FaPlus />
+            <FaPlus className="mr-2" />
             Create Post
-          </button>
+          </Link>
+          {isAdmin && (
+            <Link
+              className="  px-5 py-3 text-base font-medium rounded bg-red-500 text-white hover:bg-red-600"
+              href={`/groups/${groupId}/settings`}
+            >
+              Settings
+            </Link>
+          )}
         </div>
       </div>
-      <main className="grid grid-cols-5">
-        <div className="col-span-5 md:col-span-4">
-          <div className="flex items-center gap-1 justify-end mr-20">
-            <button
-              onClick={() => setSort("latest")}
-              className={
-                sort === "latest"
-                  ? "font-semibold hover:underline"
-                  : "hover:underline"
-              }
-            >
-              {" "}
-              Latest{" "}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2 space-y-6">
+          <div className="flex justify-end space-x-4">
+            <button className={sort === "latest" ? "font-semibold" : ""}>
+              Latest
             </button>
-            <span> </span>
-            <span>|</span>
-            <button
-              onClick={() => setSort("popular")}
-              className={
-                sort === "popular"
-                  ? "font-semibold hover:underline"
-                  : "hover:underline"
-              }
-            >
+            <button className={sort === "popular" ? "font-semibold" : ""}>
               Popular
             </button>
           </div>
-
           <hr />
           <div>
             {group.Post?.length !== 0 ? (
-              group.Post &&
               group.Post.map((post) => (
                 <Post
                   key={post.id}
-                  groupId={group.id}
+                  groupId={group.id.toString()}
                   postId={post.id.toString()}
                   title={post.title}
-                  content={post.content}
+                  author={post.author.name}
+                  authorId={post.author.id.toString()}
                   date={post.createdAt.toString()}
                   likes={post.PostLike.length}
                   dislikes={post.PostDislike.length}
                 />
               ))
             ) : (
-              <div className="flex justify-center items-center h-[50vh]">
+              <div className="flex justify-center items-center h-64">
                 <h1 className="text-3xl font-bold text-gray-500">
                   No post found
                 </h1>
               </div>
             )}
           </div>
-          <div className="flex  justify-center mt-12">
+          <div className="flex justify-center space-x-4">
             <Link
               href={`/groups/${groupId}?page=${page > 1 ? page - 1 : 1}`}
-              className="border border-black py-2 px-4"
+              className="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
             >
               <FaArrowLeft />
             </Link>
             <Link
+              className="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
               href={`/groups/${groupId}?page=${page + 1}`}
-              className="border border-black py-2 px-4 "
             >
               <FaArrowRight />
             </Link>
           </div>
         </div>
-
-        <aside className=" p-4 bg-slate-100 rounded-xl ml-2 hidden md:block min-h-96 max-h-[700px]">
-          <h2 className="text-2xl font-bold mb-6">Group Description</h2>
-          <p className="">{group.description}</p>
+        <aside>
+          <div className="p-6 bg-gray-50 rounded-lg shadow break-words">
+            <h2 className="text-2xl font-bold mb-4">Group Description</h2>
+            <p className="text-gray-600  ">{group.description}</p>
+          </div>
+          <div>
+            <div className="mt-6 overflow-auto max-h-60">
+              <h2 className="text-2xl font-bold mb-4">
+                Members ({group.GroupMember.length})
+              </h2>
+              <ul className="space-y-2">
+                {group.GroupMember.map((member) => (
+                  <li key={member.id} className="text-gray-600">
+                    {member.User.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-6 overflow-auto max-h-60">
+              <h2 className="text-2xl font-bold mb-4">
+                Admins ({group.GroupAdmin.length})
+              </h2>
+              <ul className="space-y-2">
+                {group.GroupAdmin.map((admin) => (
+                  <li key={admin.id} className="text-gray-600">
+                    {admin.User.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </aside>
-      </main>
+      </div>
     </div>
   );
 }

@@ -16,7 +16,7 @@ model User {
   updatedAt DateTime @updatedAt
   bio       String?
   avatar    String?
-  
+
   groups         GroupMember[]
   adminOf        GroupAdmin[]
   posts          Post[]
@@ -32,7 +32,7 @@ model Group {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   name        String
-  description String
+  description String   @db.VarChar(255)
 
   GroupMember GroupMember[]
   GroupAdmin  GroupAdmin[]

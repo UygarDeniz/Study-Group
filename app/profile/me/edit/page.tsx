@@ -151,7 +151,7 @@ function EditProfile() {
         <div></div>
         <div className="text-right ">
           <Link
-            href="/profile/edit/password"
+            href="/profile/me/edit/password"
             className=" text-red-500 text-lg font-semibold hover:underline"
           >
             Change Password

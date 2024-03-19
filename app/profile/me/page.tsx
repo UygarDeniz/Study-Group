@@ -1,26 +1,12 @@
 import React from "react";
 import { getServerSession } from "next-auth";
-import { options } from "../api/auth/[...nextauth]/options";
-import GroupCard from "../(components)/GroupCard";
+import { options } from "@/app/api/auth/[...nextauth]/options";
+import GroupCard from "@/app/(components)/GroupCard";
 import { PrismaClient } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 const prisma = new PrismaClient();
-type Group = {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  name: string;
-  description: string;
-};
-type GroupMember = {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number;
-  groupId: number;
-  Group: Group;
-};
+
 async function getCurrentUser() {
   const { user } = await getServerSession(options);
   return user;
@@ -28,8 +14,7 @@ async function getCurrentUser() {
 
 async function getMemberedGroups(user) {
   try {
-    const { user } = await getServerSession(options);
-    const groups: GroupMember[] = await prisma.groupMember.findMany({
+    const groups = await prisma.groupMember.findMany({
       where: {
         userId: user.id,
       },
@@ -79,7 +64,7 @@ async function page() {
 
           <div className="mt-8">
             <Link
-              href="/profile/edit"
+              href="/profile/me/edit"
               className=" py-2 px-14 border-2 border-black rounded-full"
             >
               {" "}

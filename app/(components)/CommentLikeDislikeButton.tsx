@@ -121,9 +121,9 @@ function LikeDislikeButton({ difference, commentId }) {
     >
       <FaArrowUp
         onClick={handleLike}
-        className={` cursor-pointer ${liked ? "text-white" : "text-black"}`}
+        className={` cursor-pointer ${liked ? "text-white" : "text-gray-700"}`}
       />
-      <p className={` ${liked || disliked ? "text-white " : "text-black"}`}>
+      <p className={` ${liked || disliked ? "text-white " : "text-gray-700"}`}>
         {numeral(likeDislikeDiff).format(
           likeDislikeDiff % 1000 === 0 || likeDislikeDiff < 1000 ? "0a" : "0.0a"
         )}

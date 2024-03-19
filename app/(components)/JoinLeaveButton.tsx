@@ -72,7 +72,7 @@ function JoinButton({ groupId, color }: JoinButtonProps) {
   return !isMember ? (
     <button
       onClick={handleJoin}
-      className={`md:text-lg px-6 py-1 rounded-3xl transition-colors duration-200 ease-in-out text-white  hover:text-white ${buttonColor}`}
+      className={`md:text-lg px-6 py-1 rounded transition-colors duration-200 ease-in-out text-white  hover:text-white ${buttonColor}`}
     >
       {isPending ? (
         <div className="px-4 py-1">
@@ -85,7 +85,7 @@ function JoinButton({ groupId, color }: JoinButtonProps) {
   ) : (
     <button
       onClick={handleLeave}
-      className={`md:text-lg px-6 py-1 rounded-3xl transition-colors duration-200 ease-in-out text-white  hover:text-white ${buttonColor}`}
+      className={`md:text-lg px-6 py-1 rounded transition-colors duration-200 ease-in-out text-white  hover:text-white ${buttonColor}`}
     >
       {isPending ? <ImSpinner2 className="text-2xl animate-spin " /> : "Leave"}
     </button>

@@ -36,7 +36,7 @@ async function Header() {
       <nav className="flex items-center gap-4 md:gap-10 text-sm md:text-xl">
         {session?.user && (
           <Link
-            href="/profile"
+            href="/profile/me"
             className="transition-colors duration-300 ease-in-out hover:text-red-400 font-semibold "
           >
             Profile

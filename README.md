@@ -45,11 +45,12 @@ Requirements:
 - [x] implement infinite scrolling or pagination to comments/posts
 
 
-- [ ] view profiles
+- [x] view profiles
 
 - [ ] group settings for admins
 - [ ] add remove admin
 
+- [ ] sidebar (groups, settings, profile)
 - [ ] feed
 
 - [ ] share file
