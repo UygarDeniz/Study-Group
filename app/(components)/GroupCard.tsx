@@ -25,9 +25,10 @@ function GroupCard({ id, name, description }: GroupCardProps) {
           </div>
         </div>
         <h3 className="text-2xl mt-8 font-bold ">{name}</h3>
-        <p className="text-center mt-4 mb-2">
-          {description.length > 100
-            ? description.substring(0, 100) + "..."
+        
+        <p className="text-center mt-4 mb-2 break-words overflow-auto">
+          {description.length > 30
+            ? description.substring(0, 30) + "..."
             : description}
         </p>
       </Link>

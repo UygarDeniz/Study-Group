@@ -1,12 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import GroupCard from "./(components)/GroupCard";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-
+import { db } from "./_utils/db";
 
 export default async function Home() {
-  const groups = await prisma.group.findMany();
+  const groups = await db.group.findMany();
   return (
     <main className="flex  flex-col ">
       <section className="flex text-center lg:text-left ">

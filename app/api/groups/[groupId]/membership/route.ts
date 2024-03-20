@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/app/_utils/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 
-const prisma = new PrismaClient();
 
 export async function GET(
   req: NextRequest,
@@ -17,7 +16,7 @@ export async function GET(
   const userId: number = session.user.id;
   const groupId = params.groupId;
 
-  const membership = await prisma.groupMember.findFirst({
+  const membership = await db.groupMember.findFirst({
     where: {
       userId: userId,
       groupId: Number(groupId),

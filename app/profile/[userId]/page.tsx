@@ -1,11 +1,11 @@
 import React from "react";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/app/_utils/db";
 import Image from "next/image";
 import GroupCard from "@/app/(components)/GroupCard";
 
-const prisma = new PrismaClient();
+
 async function getUserProfile(userId: string) {
-  const user = await prisma.user.findUnique({
+  const user = await db.user.findUnique({
     where: {
       id: Number(userId),
     },
@@ -15,7 +15,7 @@ async function getUserProfile(userId: string) {
 
 async function getMemberedGroups(userId: string) {
   try {
-    const groups = await prisma.groupMember.findMany({
+    const groups = await db.groupMember.findMany({
       where: {
         userId: Number(userId),
       },

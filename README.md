@@ -38,23 +38,29 @@ Requirements:
   - [x] Joined Groups
   - [x] update settings
 
-- [x] search functionalty
+- [x] search functionalty for groups
 
 - [x] react query
 
-- [x] implement infinite scrolling or pagination to comments/posts
+- [x] implement infinite scrolling or pagination to comments/posts/groups
 
+- [x] view user profiles
 
-- [x] view profiles
+- [x] group settings for admins
 
-- [ ] group settings for admins
-- [ ] add remove admin
+  - [x] change group name and description
+  - [x] add remove admin
+  - [x] remove member from group
+  - [ ] Check authorization for group settings
 
 - [ ] sidebar (groups, settings, profile)
 - [ ] feed
+- [ ] middleware to check authorization
+- [ ] tostify 
+- [ ] header responsiveness
 
-- [ ] share file
 - [ ] avatar upload
+- [ ] share file
 
 - [ ] livechat
 

@@ -1,6 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrpyt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/app/_utils/db";
 export const options = {
   providers: [
     CredentialsProvider({
@@ -18,9 +18,9 @@ export const options = {
         },
       },
       async authorize(credentials : {email: string, password: string}) :  Promise<any> {
-        const prisma = new PrismaClient();
+       
         try {
-          const user = await prisma.user.findUnique({
+          const user = await db.user.findUnique({
             where: {
               email: credentials.email,
             },

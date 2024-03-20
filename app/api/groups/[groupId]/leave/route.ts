@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import {db } from "@/app/_utils/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { NextRequest, NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+
 
 export async function POST(req: NextRequest, { params }) {
   const session = await getServerSession(options);
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, { params }) {
   const groupId = params.groupId;
 
   try {
-    const existingMembership = await prisma.groupMember.findFirst({
+    const existingMembership = await db.groupMember.findFirst({
       where: {
         userId: userId,
         groupId: Number(groupId),
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }) {
       return NextResponse.json({ error: "User is not a member of this group" });
     }
 
-    await prisma.groupMember.deleteMany({
+    await db.groupMember.deleteMany({
       where: {
         userId: userId,
         groupId: Number(groupId),

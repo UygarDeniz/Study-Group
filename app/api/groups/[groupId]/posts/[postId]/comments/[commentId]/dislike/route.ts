@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
+import { db } from "@/app/_utils/db";
 
-const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest, { params }) {
   const { commentId } = params;
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest, { params }) {
     const userId: number = session.user.id;
 
     // Check if the user has already liked the comment
-    const existingLike = await prisma.commentLike.findFirst({
+    const existingLike = await db.commentLike.findFirst({
       where: {
         userId: userId,
         commentId: Number(commentId),
@@ -22,12 +22,12 @@ export async function POST(req: NextRequest, { params }) {
 
     // If the user has already liked the comment, remove the like and add a dislike
     if (existingLike) {
-      await prisma.commentLike.delete({
+      await db.commentLike.delete({
         where: {
           id: existingLike.id,
         },
       });
-      await prisma.commentDislike.create({
+      await db.commentDislike.create({
         data: {
           userId: userId,
           commentId: Number(commentId),
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest, { params }) {
       });
     } else {
       // Check if the user has already disliked the comment
-      const existingDislike = await prisma.commentDislike.findFirst({
+      const existingDislike = await db.commentDislike.findFirst({
         where: {
           userId: userId,
           commentId: Number(commentId),
@@ -44,13 +44,13 @@ export async function POST(req: NextRequest, { params }) {
 
       // If the user has already disliked the comment, remove the dislike
       if (existingDislike) {
-        await prisma.commentDislike.delete({
+        await db.commentDislike.delete({
           where: {
             id: existingDislike.id,
           },
         });
       } else {
-        await prisma.commentDislike.create({
+        await db.commentDislike.create({
           data: {
             userId: userId,
             commentId: Number(commentId),

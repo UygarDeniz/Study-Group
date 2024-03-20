@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/app/_utils/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest, { params }) {
   const { commentId } = params;
@@ -12,7 +11,7 @@ export async function GET(req: NextRequest, { params }) {
     const session = await getServerSession(options);
     const userId: number = session.user.id;
 
-    const existingLike = await prisma.commentLike.findFirst({
+    const existingLike = await db.commentLike.findFirst({
       where: {
         userId: userId,
         commentId: Number(commentId),
@@ -20,7 +19,7 @@ export async function GET(req: NextRequest, { params }) {
     });
 
 
-    const existingDislike = await prisma.commentDislike.findFirst({
+    const existingDislike = await db.commentDislike.findFirst({
       where: {
         userId: userId,
         commentId: Number(commentId),

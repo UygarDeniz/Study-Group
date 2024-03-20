@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/app/_utils/db";
 
 export async function GET(req: NextRequest, { params }) {
-  const prisma = new PrismaClient();
+
   const searchParams = req.nextUrl.searchParams;
   const page = parseInt(searchParams.get("page"));
   const pageSize = 3;
   const { groupId, postId } = params;
 
   try {
-    const post = await prisma.post.findUnique({
+    const post = await db.post.findUnique({
       where: {
         id: Number(postId),
       },

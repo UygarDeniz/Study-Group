@@ -1,13 +1,10 @@
 import GroupCard from "../(components)/GroupCard";
 import { FaSearch } from "react-icons/fa";
-import { PrismaClient } from "@prisma/client";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa";
-import GroupCardSection from "../(components)/GroupCardSection";
-
-const prisma = new PrismaClient();
+import { db } from "../_utils/db";
 
 type Group = {
   id: number;
@@ -16,7 +13,7 @@ type Group = {
 };
 async function getGroups(name: string, page: number) {
   const pageSize = 5;
-  const groups: Group[] = await prisma.group.findMany({
+  const groups: Group[] = await db.group.findMany({
     where: {
       name: {
         contains: name,
@@ -26,7 +23,6 @@ async function getGroups(name: string, page: number) {
     take: pageSize,
   });
 
-  prisma.$disconnect();
   return groups;
 }
 async function handleSearch(formData: FormData) {

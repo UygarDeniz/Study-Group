@@ -2,10 +2,9 @@ import React from "react";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import GroupCard from "@/app/(components)/GroupCard";
-import { PrismaClient } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-const prisma = new PrismaClient();
+import { db } from "@/app/_utils/db";
 
 async function getCurrentUser() {
   const { user } = await getServerSession(options);
@@ -14,7 +13,7 @@ async function getCurrentUser() {
 
 async function getMemberedGroups(user) {
   try {
-    const groups = await prisma.groupMember.findMany({
+    const groups = await db.groupMember.findMany({
       where: {
         userId: user.id,
       },
@@ -31,7 +30,7 @@ async function getMemberedGroups(user) {
 
 async function getUserInfo(user) {
   try {
-    const userInfo = await prisma.user.findUnique({
+    const userInfo = await db.user.findUnique({
       where: {
         id: user.id,
       },

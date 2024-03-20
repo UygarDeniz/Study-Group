@@ -5,15 +5,15 @@ import JoinButton from "../../(components)/JoinLeaveButton";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
+import { db } from "@/app/_utils/db";
 
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+
 
 const getGroup = async (groupId: string, page) => {
   const pageSize = 6;
   try {
-    const foundGroup = await prisma.group.findUnique({
+    const foundGroup = await db.group.findUnique({
       where: {
         id: Number(groupId),
       },

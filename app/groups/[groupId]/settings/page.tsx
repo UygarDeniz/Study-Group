@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+import { changeGroupsDetails } from "@/app/actions/actions";
+import { db } from "@/app/_utils/db";
 const getGroup = async (groupId: string) => {
   try {
-    const group = await prisma.group.findUnique({
+    const group = await db.group.findUnique({
       where: { id: Number(groupId) },
       include: {
         GroupMember: {
@@ -39,7 +39,7 @@ export default async function GroupSettings({ params }) {
   const { groupId } = params;
 
   const group = await getGroup(groupId);
-
+  const changeGroupsDetailsWithGroupId = changeGroupsDetails.bind(null, groupId);
   if (!group) return <div>Loading...</div>;
 
   return (
@@ -51,7 +51,7 @@ export default async function GroupSettings({ params }) {
         </p>
       </div>
       <hr className="mb-8 mt-1 border border-black w-full" />
-      <form className="space-y-6">
+      <form className="space-y-6" action={changeGroupsDetailsWithGroupId}>
         <div className="relative">
           <input
             type="text"

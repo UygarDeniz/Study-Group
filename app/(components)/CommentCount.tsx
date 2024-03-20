@@ -1,11 +1,12 @@
 import React from "react";
-import { PrismaClient } from "@prisma/client";
+
 import { FaRegMessage } from "react-icons/fa6";
 import numeral from "numeral";
-const prisma = new PrismaClient();
+import { db } from "../_utils/db";
+
 
 const getCommentCount = async (postId: string) => {
-  const count =  prisma.comment.count({
+  const count =  db.comment.count({
     where: {
       postId: Number(postId),
     },

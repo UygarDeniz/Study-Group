@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+
 import { NextRequest } from "next/server";
 import bcrypt from "bcrypt";
-
+import { db } from "@/app/_utils/db";
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const prisma = new PrismaClient();
+
   if (!body.email || !body.password || !body.name) {
     return NextResponse.json(
       { message: "Please fill in all fields" },
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: {
         email: body.email,
       },
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(body.password, 10);
 
-    const newUser = await prisma.user.create({
+    const newUser = await db.user.create({
       data: {
         name: body.name,
         email: body.email,

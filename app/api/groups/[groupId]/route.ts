@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/app/_utils/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 
-const prisma = new PrismaClient();
+
 export async function GET(
   req: NextRequest,
 
@@ -17,7 +17,7 @@ export async function GET(
   const sort = searchParams.get("sort");
   
   const pageSize = 6;
-  const foundGroup = await prisma.group.findUnique({
+  const foundGroup = await db.group.findUnique({
     where: {
       id: Number(groupId),
     },
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest, { params }) {
   const userId: number = session.user.id;
   const { groupId } = params.id;
 
-  const existingMembership = await prisma.groupMember.findFirst({
+  const existingMembership = await db.groupMember.findFirst({
     where: {
       userId: userId,
       groupId: Number(groupId),
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest, { params }) {
       error: "User is already a member of this group",
     });
   }
-  const newMembership = await prisma.groupMember.create({
+  const newMembership = await db.groupMember.create({
     data: {
       userId: session.user.id,
       groupId: Number(groupId),

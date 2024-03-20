@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
-
-const prisma = new PrismaClient();
+import { db } from "@/app/_utils/db";
 
 export async function GET() {
   try {
     const { user } = await getServerSession(options);
-    const profile = await prisma.user.findUnique({
+    const profile = await db.user.findUnique({
       where: {
         id: user.id,
       },
@@ -34,7 +32,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Missing name, email, or bio" }, { status: 400 });
     }
 
-    await prisma.user.update({
+    await db.user.update({
       where: {
         id: user.id,
       },

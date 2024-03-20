@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/app/_utils/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import bcrypt from "bcrypt";
-const prisma = new PrismaClient();
+
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const profile = await prisma.user.findUnique({
+    const profile = await db.user.findUnique({
       where: {
         id: user.id,
       },
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     }
 
     const newPassword = await bcrypt.hash(body.newPassword, 10);
-    await prisma.user.update({
+    await db.user.update({
       where: {
         id: user.id,
       },

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/app/_utils/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 
-const prisma = new PrismaClient();
+
 
 export async function GET(req: NextRequest, { params }) {
   const { postId } = params;
@@ -12,14 +12,14 @@ export async function GET(req: NextRequest, { params }) {
     const session = await getServerSession(options);
     const userId: number = session.user.id;
 
-    const existingLike = await prisma.postLike.findFirst({
+    const existingLike = await db.postLike.findFirst({
       where: {
         userId: userId,
         postId: Number(postId),
       },
     });
 
-    const existingDislike = await prisma.postDislike.findFirst({
+    const existingDislike = await db.postDislike.findFirst({
       where: {
         userId: userId,
         postId: Number(postId),

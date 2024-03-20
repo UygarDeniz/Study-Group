@@ -1,11 +1,10 @@
 "use server";
-import { PrismaClient } from "@prisma/client";
+import {db} from "@/app/_utils/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options";
 
-const prisma = new PrismaClient();
 
 export default async function createGroup(formData: FormData) {
   try {
@@ -16,7 +15,7 @@ export default async function createGroup(formData: FormData) {
 
     const session = await getServerSession(options);
     const founderId = session.user.id;
-    const group = await prisma.group.create({
+    const group = await db.group.create({
       data: {
         name,
         description,
@@ -41,7 +40,7 @@ export async function createPost(groupId: string, formData: FormData) {
     const content = formData.get("content") as string;
     const session = await getServerSession(options);
     const authorId = session.user.id;
-    const post = await prisma.post.create({
+    const post = await db.post.create({
       data: {
         title,
         content: content.trim(),
@@ -66,7 +65,7 @@ export async function createComment(
     const content = formData.get("comment") as string;
     const session = await getServerSession(options);
     const authorId = session.user.id;
-    const comment = await prisma.comment.create({
+    const comment = await db.comment.create({
       data: {
         content,
         postId: Number(postId),
@@ -86,7 +85,7 @@ export async function changeUserSettings(formData: FormData) {
     const email = formData.get("email") as string;
     const bio = formData.get("bio") as string;
     const session = await getServerSession(options);
-    const user = await prisma.user.update({
+    const user = await db.user.update({
       where: {
         id: session.user.id,
       },
@@ -103,3 +102,31 @@ export async function changeUserSettings(formData: FormData) {
     throw error;
   }
 }
+
+export const changeGroupsDetails = async (
+  groupId: string,
+  formData: FormData
+) => {
+  try {
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
+    if (!name || !description) {
+      throw new Error("Name and description are required");
+    }
+
+    const group = await db.group.update({
+      where: {
+        id: Number(groupId),
+      },
+      data: {
+        name,
+        description,
+      },
+    });
+
+    revalidatePath(`/groups/${groupId}`);
+  } catch (error) {
+    console.error("Error updating group details:", error);
+    throw error;
+  }
+};

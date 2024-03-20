@@ -10,14 +10,21 @@ export default function layout({ children, params }) {
         <h2 className="text-2xl font-semibold mb-4">Group Settings</h2>
         <ul>
           <li>
-            <Link href={`/groups/${groupId}/settings`} className="text-lg ">Settings</Link>
+            <Link href={`/groups/${groupId}/settings`} className="text-lg ">
+              Settings
+            </Link>
           </li>
           <li>
-            <Link href={`/groups/${groupId}/settings/roles`} className="text-lg">Roles</Link>
+            <Link
+              href={`/groups/${groupId}/settings/roles`}
+              className="text-lg"
+            >
+              Roles
+            </Link>
           </li>
         </ul>
       </div>
-      {/* Main content */}
+
       {children}
     </div>
   );
