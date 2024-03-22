@@ -9,6 +9,7 @@ type CommentProps = {
   name: string;
   date: string;
   content: string;
+  avatar: string;
   likes: number;
   dislikes: number;
   authorId: number;
@@ -16,14 +17,15 @@ type CommentProps = {
 
 const Comment = React.forwardRef(
   (
-    { id, name, date, content, likes, dislikes, authorId }: CommentProps,
+    { id, name, avatar, date, content, likes, dislikes, authorId }: CommentProps,
     ref
   ) => {
+    
     const commentBody = (
       <div className="flex  p-4 hover:shadow-inner hover:bg-gray-200 rounded-xl ">
         <Link href={`/profile/${authorId}`}>
           <div className="flex  mt-1 min-w-7">
-            <GroupImageSm image="/group2.jpg" />
+            <GroupImageSm image={avatar} />
           </div>
         </Link>
         <div className="mx-4 ">

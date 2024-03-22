@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { set } from "date-fns";
+import { ImSpinner } from "react-icons/im";
 
 const getGroup = async (groupId: string) => {
   try {
@@ -93,7 +93,7 @@ export default function page({ params }) {
   if (isPending) {
     return (
       <div className="flex w-full justify-center items-center text-3xl font-bold">
-        Loading...
+        <ImSpinner className="animate-spin h-10 w-10 text-blue-500" />
       </div>
     );
   }
@@ -126,7 +126,6 @@ export default function page({ params }) {
 
   return (
     <div className="flex flex-col items-center w-full p-4">
-      
       {error && <div className="text-red-500 mb-4">{error}</div>}
       <input
         type="text"

@@ -5,35 +5,7 @@ import numeral from "numeral";
 import { useParams } from "next/navigation";
 import { ImSpinner2 } from "react-icons/im";
 import { useQuery, useMutation } from "@tanstack/react-query";
-
-const fetchLikeStatus = async (groupId, postId) => {
-  const res = await fetch(`/api/groups/${groupId}/posts/${postId}/likeStatus`);
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
-  }
-  const data = await res.json();
-  return data;
-};
-
-const dislikePost = async (groupId, postId) => {
-  const res = await fetch(`/api/groups/${groupId}/posts/${postId}/dislike`, {
-    method: "POST",
-  });
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return res.json();
-};
-
-const likePost = async (groupId, postId) => {
-  const res = await fetch(`/api/groups/${groupId}/posts/${postId}/like`, {
-    method: "POST",
-  });
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return res.json();
-};
+import { useRouter } from "next/navigation";
 
 function PostLikeDislikeButton({ difference, postId }) {
   const [liked, setLiked] = useState(false);
@@ -41,12 +13,57 @@ function PostLikeDislikeButton({ difference, postId }) {
   const [likeDislikeDiff, setLikeDislikeDiff] = useState(difference);
 
   const params = useParams();
+  const router = useRouter();
   const { groupId } = params;
+  const fetchLikeStatus = async (groupId, postId) => {
+    const res = await fetch(
+      `/api/groups/${groupId}/posts/${postId}/likeStatus`
+    );
+
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await res.json();
+    return data;
+  };
+
+  async function dislikePost(groupId, postId) {
+    const res = await fetch(`/api/groups/${groupId}/posts/${postId}/dislike`, {
+      method: "POST",
+    });
+
+    if (res.status === 401) {
+      router.push("/api/auth/signin");
+    }
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(
+        data.status === 401 ? "Unauthorized" : "Network response was not ok"
+      );
+    }
+
+    return res.json();
+  }
+
+  async function likePost(groupId, postId) {
+    const res = await fetch(`/api/groups/${groupId}/posts/${postId}/like`, {
+      method: "POST",
+    });
+
+    if (res.status === 401) {
+      router.push("/api/auth/signin");
+    }
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.messaga);
+    }
+
+    return res.json();
+  }
 
   const { data, isPending } = useQuery({
     queryKey: ["likeStatus", groupId, postId],
     queryFn: () => fetchLikeStatus(groupId, postId),
-    staleTime: 1000 * 60 * 5,
   });
 
   const dislikeMutation = useMutation({
@@ -91,17 +108,25 @@ function PostLikeDislikeButton({ difference, postId }) {
     },
   });
 
-  const handleLike = async () => {
-    likeMutation.mutate();
-  };
+  async function handleLike() {
+    try {
+      await likeMutation.mutateAsync();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
-  const handleDislike = async () => {
-    dislikeMutation.mutate();
-  };
+  async function handleDislike() {
+    try {
+      await dislikeMutation.mutateAsync();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   if (isPending) {
     return (
-      <div className="px-8 w-16 py-1 rounded-full border border-black text-center">
+      <div className="px-7  py-1 rounded-full border border-black ">
         <ImSpinner2 className="animate-spin" />
       </div>
     );

@@ -53,15 +53,17 @@ Requirements:
   - [x] remove member from group
   - [ ] Check authorization for group settings
 
-- [ ] sidebar (groups, settings, profile)
-- [ ] feed
-- [ ] middleware to check authorization
-- [ ] tostify 
-- [ ] header responsiveness
+- [x] sidebar (groups, settings, profile)
 
-- [ ] avatar upload
-- [ ] share file
+- [x] middleware to check authorization
+
+- [x] header responsiveness
+
+- [x] avatar upload (Used uploadthings)
 
 - [ ] livechat
 
+- [ ] responsivness
 - [ ] zoom/google meets and study seassion
+
+- [ ] share file (needs extra storage space)

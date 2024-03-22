@@ -49,7 +49,7 @@ export default async function UserProfile({ params }) {
       <div className="flex flex-col w-1/4  items-center mt-12 ">
         <div>
           <Image
-            src="/group2.jpg"
+            src={userInfo.avatar}
             alt="Profile"
             width="150"
             height="150"
@@ -76,6 +76,7 @@ export default async function UserProfile({ params }) {
               key={group.id}
               id={group.Group.id.toString()}
               name={group.Group.name}
+              avatar={group.Group.avatar}
               description={group.Group.description}
             />
           ))}

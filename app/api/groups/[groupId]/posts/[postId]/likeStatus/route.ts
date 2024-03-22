@@ -3,15 +3,15 @@ import { db } from "@/app/_utils/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 
-
-
 export async function GET(req: NextRequest, { params }) {
   const { postId } = params;
 
   try {
     const session = await getServerSession(options);
-    const userId: number = session.user.id;
-
+    const userId: number = session?.user?.id;
+    if (!userId) {
+      return NextResponse.json({ likeStatus: "none" });
+    }
     const existingLike = await db.postLike.findFirst({
       where: {
         userId: userId,
@@ -33,6 +33,9 @@ export async function GET(req: NextRequest, { params }) {
     return NextResponse.json({ likeStatus: "none" });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred. Please try again." },
+      { status: 500 }
+    );
   }
 }

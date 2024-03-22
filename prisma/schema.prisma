@@ -15,7 +15,7 @@ model User {
   password  String
   updatedAt DateTime @updatedAt
   bio       String?
-  avatar    String?
+  avatar    String? @default("https://utfs.io/f/ec604648-73dc-45d7-97e2-2ae2b6137f89-oubu9r.jpg")
 
   groups         GroupMember[]
   adminOf        GroupAdmin[]
@@ -33,6 +33,7 @@ model Group {
   updatedAt   DateTime @updatedAt
   name        String
   description String   @db.VarChar(255)
+  avatar      String   @default("https://utfs.io/f/767e333e-24de-448c-841b-1437f70835e2-b4dc8y.png")
 
   GroupMember GroupMember[]
   GroupAdmin  GroupAdmin[]

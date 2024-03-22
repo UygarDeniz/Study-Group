@@ -7,25 +7,25 @@ export default async function Home() {
   const groups = await db.group.findMany();
   return (
     <main className="flex  flex-col ">
-      <section className="flex text-center lg:text-left ">
-        <div className="mt-10 lg:mt-32">
+      <section className="flex   ">
+        <div className="mt-10 lg:mt-12 xl:mt-28 text-center lg:text-left">
           <h1 className="text-4xl lg:text-6xl font-bold mx-20 text-nowrap">
             Together We <br />
             <span className="text-red-500">Achieve</span> More
           </h1>
-          <p className=" text-xl lg:text-2xl mt-2 mb-6 mx-20  ">
+          <p className=" text-xl lg:text-xl xl:text-2xl mt-1 mb-5 mx-20  ">
             A web application that helps students form virtual study groups.
             Collaborate, share resources, and schedule study sessions.
           </p>
           <Link
             href="/groups/new"
-            className=" ml-20 mr-3 bg-red-500 border-2 border-red-500 text-white text-lg px-8 py-2 rounded hover:bg-red-600 transition-colors duration-200 ease-in-out"
+            className=" md:ml-20 mr-3 bg-red-500 border-2 border-red-500 text-white text-lg px-2 md:px-8 py-2 rounded hover:bg-red-600 transition-colors duration-200 ease-in-out"
           >
             Create Group
           </Link>
           <Link
             href="/groups"
-            className=" border-2 border-black  text-lg px-8 py-2 rounded hover:bg-gray-300 transition-colors duration-200 ease-in-out"
+            className=" border-2 border-black  text-lg px-2 md:px-8 py-2 rounded hover:bg-gray-300 transition-colors duration-200 ease-in-out"
           >
             Discover Groups
           </Link>
@@ -79,6 +79,7 @@ export default async function Home() {
             <GroupCard
               key={group.id}
               id={group.id.toString()}
+              avatar={group.avatar}
               name={group.name}
               description={group.description}
             />

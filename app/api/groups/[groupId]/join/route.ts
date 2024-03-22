@@ -2,14 +2,13 @@ import { db } from "@/app/_utils/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { NextRequest, NextResponse } from "next/server";
-
-
+import { redirect } from "next/navigation";
 
 export async function POST(req: NextRequest, { params }) {
   const session = await getServerSession(options);
-
   if (!session) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    console.log("no session");
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const userId: number = session.user.id;
@@ -24,7 +23,9 @@ export async function POST(req: NextRequest, { params }) {
     });
 
     if (existingMembership) {
-      return NextResponse.json({ error: "User is already a member of this group" });
+      return NextResponse.json({
+        error: "User is already a member of this group",
+      });
     }
 
     const newMembership = await db.groupMember.create({
@@ -36,6 +37,9 @@ export async function POST(req: NextRequest, { params }) {
 
     return NextResponse.json({ userId }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to join group" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to join group" },
+      { status: 500 }
+    );
   }
 }

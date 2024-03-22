@@ -56,12 +56,8 @@ export async function POST(req: NextRequest, { params }) {
     // Add the user to the groupAdmin collection
     await db.groupAdmin.create({
       data: {
-        Group: {
-          connect: { id: Number(groupId) },
-        },
-        User: {
-          connect: { id: Number(userId) },
-        },
+        userId: Number(userId),
+        groupId: Number(groupId),
       },
     });
 
@@ -127,6 +123,9 @@ export async function DELETE(req: NextRequest, { params }) {
     );
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred. Please try again." },
+      { status: 500 }
+    );
   }
 }

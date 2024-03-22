@@ -7,7 +7,8 @@ import Link from "next/link";
 import { db } from "@/app/_utils/db";
 
 async function getCurrentUser() {
-  const { user } = await getServerSession(options);
+  const session = await getServerSession(options);
+  const user = session?.user;
   return user;
 }
 
@@ -51,7 +52,7 @@ async function page() {
       <div className="flex flex-col w-1/4  items-center mt-12 ">
         <div>
           <Image
-            src="/group2.jpg"
+            src={userInfo.avatar}
             alt="Profile"
             width="150"
             height="150"
@@ -87,6 +88,7 @@ async function page() {
             <GroupCard
               key={group.id}
               id={group.Group.id.toString()}
+              avatar={group.Group.avatar}
               name={group.Group.name}
               description={group.Group.description}
             />

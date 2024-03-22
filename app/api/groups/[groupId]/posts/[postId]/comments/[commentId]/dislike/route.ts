@@ -4,13 +4,25 @@ import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { db } from "@/app/_utils/db";
 
-
 export async function POST(req: NextRequest, { params }) {
   const { commentId } = params;
 
   try {
     const session = await getServerSession(options);
+    if (!session) {
+      return NextResponse.json({ message: "No session" }, { status: 401 });
+    }
+
     const userId: number = session.user.id;
+
+    const user = await db.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) {
+      return NextResponse.json({message:"No user found"},{ status: 401 });
+    }
 
     // Check if the user has already liked the comment
     const existingLike = await db.commentLike.findFirst({
@@ -62,6 +74,9 @@ export async function POST(req: NextRequest, { params }) {
     return NextResponse.json({ status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred. Please try again." },
+      { status: 500 }
+    );
   }
 }

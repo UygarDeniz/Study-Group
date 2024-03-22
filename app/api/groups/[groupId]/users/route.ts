@@ -32,6 +32,9 @@ export async function GET(req: NextRequest, { params }) {
     });
     return NextResponse.json(group, { status: 200 });
   } catch (error) {
-    return NextResponse.error();
+    return NextResponse.json(
+      { message: "An error occurred. Please try again." },
+      { status: 500 }
+    );
   }
 }

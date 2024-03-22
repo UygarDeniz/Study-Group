@@ -5,42 +5,7 @@ import numeral from "numeral";
 import { useParams } from "next/navigation";
 import { ImSpinner2 } from "react-icons/im";
 import { useQuery, useMutation } from "@tanstack/react-query";
-
-const fetchLikeStatus = async (groupId, postId, commentId) => {
-  const res = await fetch(
-    `/api/groups/${groupId}/posts/${postId}/comments/${commentId}/likeStatus`
-  );
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
-  }
-  const data = await res.json();
-  return data;
-};
-
-const dislikeComment = async (groupId, postId, commentId) => {
-  const res = await fetch(
-    `/api/groups/${groupId}/posts/${postId}/comments/${commentId}/dislike`,
-    {
-      method: "POST",
-    }
-  );
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return res.json();
-};
-const likeComment = async (groupId, postId, commentId) => {
-  const res = await fetch(
-    `/api/groups/${groupId}/posts/${postId}/comments/${commentId}/like`,
-    {
-      method: "POST",
-    }
-  );
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return res.json();
-};
+import { useRouter } from "next/navigation";
 
 function LikeDislikeButton({ difference, commentId }) {
   const [liked, setLiked] = useState(false);
@@ -48,7 +13,51 @@ function LikeDislikeButton({ difference, commentId }) {
   const [likeDislikeDiff, setLikeDislikeDiff] = useState(difference);
 
   const params = useParams();
+  const router = useRouter();
   const { groupId, postId } = params;
+  const fetchLikeStatus = async (groupId, postId, commentId) => {
+    const res = await fetch(
+      `/api/groups/${groupId}/posts/${postId}/comments/${commentId}/likeStatus`
+    );
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await res.json();
+    return data;
+  };
+
+  const dislikeComment = async (groupId, postId, commentId) => {
+    const res = await fetch(
+      `/api/groups/${groupId}/posts/${postId}/comments/${commentId}/dislike`,
+      {
+        method: "POST",
+      }
+    );
+
+    if (res.status === 401) {
+      router.push("/api/auth/signin");
+    }
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return res.json();
+  };
+  const likeComment = async (groupId, postId, commentId) => {
+    const res = await fetch(
+      `/api/groups/${groupId}/posts/${postId}/comments/${commentId}/like`,
+      {
+        method: "POST",
+      }
+    );
+
+    if (res.status === 401) {
+      router.push("/api/auth/signin");
+    }
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return res.json();
+  };
 
   const { data, isPending } = useQuery({
     queryKey: ["likeStatus", groupId, postId, commentId],

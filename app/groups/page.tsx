@@ -10,6 +10,7 @@ type Group = {
   id: number;
   name: string;
   description: string;
+  avatar: string;
 };
 async function getGroups(name: string, page: number) {
   const pageSize = 5;
@@ -38,7 +39,7 @@ export default async function Groups({ searchParams }) {
   return (
     <main>
       <div
-        className="relative bg-cover bg-center h-[350px]"
+        className="relative bg-cover bg-center h-[350px] "
         style={{ backgroundImage: "url('/community2.jpg')" }}
       >
         <h1 className="text-6xl font-bold text-white text-center pt-20">
@@ -70,6 +71,7 @@ export default async function Groups({ searchParams }) {
                   id={group.id.toString()}
                   name={group.name}
                   description={group.description}
+                  avatar={group.avatar}
                 />
               ))}
             </div>

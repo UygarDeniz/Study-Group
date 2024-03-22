@@ -4,10 +4,14 @@ import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import bcrypt from "bcrypt";
 
-
 export async function POST(req: NextRequest) {
   try {
-    const { user } = await getServerSession(options);
+    const session = await getServerSession(options);
+    if (!session) {
+      return NextResponse.json({ message: "No session" }, { status: 401 });
+    }
+    const user = session?.user;
+
     const body = await req.json();
 
     if (!body.password || !body.newPassword) {
@@ -49,7 +53,6 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("An error occurred:", error);
     return NextResponse.json(
       { message: "An error occurred. Please try again." },
       { status: 500 }

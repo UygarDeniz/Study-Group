@@ -3,7 +3,6 @@ import { db } from "@/app/_utils/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 
-
 export async function GET(
   req: NextRequest,
 
@@ -15,7 +14,7 @@ export async function GET(
   const page = parseInt(searchParams.get("page")) || 1;
   const includePosts = searchParams.get("includePosts");
   const sort = searchParams.get("sort");
-  
+
   const pageSize = 6;
   const foundGroup = await db.group.findUnique({
     where: {
@@ -52,9 +51,12 @@ export async function POST(req: NextRequest, { params }) {
   });
 
   if (existingMembership) {
-    return NextResponse.json({
-      error: "User is already a member of this group",
-    });
+    return NextResponse.json(
+      {
+        messege: "User is already a member of this group",
+      },
+      { status: 400 }
+    );
   }
   const newMembership = await db.groupMember.create({
     data: {

@@ -35,6 +35,7 @@ type Props = {
 type User = {
   id: number;
   name: string;
+  avatar: string;
 };
 
 type Post = {
@@ -64,11 +65,7 @@ type CommentDislike = {
   commentId: number;
 };
 
-type Group = {
-  id: number;
-  name: string;
-  description: string;
-};
+
 
 function Post({ params }: Props) {
   const { groupId, postId } = params;
@@ -103,6 +100,7 @@ function Post({ params }: Props) {
           name={comment.author.name}
           date={comment.createdAt}
           content={comment.content}
+          avatar={comment.author.avatar}
           authorId={comment.author.id}
           likes={comment.CommentLike.length}
           dislikes={comment.CommentDislike.length}
@@ -118,6 +116,7 @@ function Post({ params }: Props) {
         authorId={comment.author.id}
         date={comment.createdAt}
         content={comment.content}
+        avatar={comment.author.avatar}
         likes={comment.CommentLike.length}
         dislikes={comment.CommentDislike.length}
       />
@@ -140,7 +139,7 @@ function Post({ params }: Props) {
                 href={`/groups/${groupId}`}
                 className="text-lg mt-0.5 font-semibold"
               >
-                <GroupImageMd image="/group2.jpg" />
+                <GroupImageMd image={group?.avatar} />
               </Link>
               <div>
                 <div className="flex items-center gap-3">

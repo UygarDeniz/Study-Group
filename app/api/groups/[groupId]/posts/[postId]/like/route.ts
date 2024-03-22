@@ -10,6 +10,10 @@ export async function POST(req: NextRequest, { params }) {
 
   try {
     const session = await getServerSession(options);
+    
+    if (!session) {
+      return NextResponse.json({ message: "No session" }, { status: 401 });
+    }
     const userId: number = session.user.id;
 
     const existingDislike = await db.postDislike.findFirst({
@@ -59,6 +63,9 @@ export async function POST(req: NextRequest, { params }) {
     return NextResponse.json({ status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred. Please try again." },
+      { status: 500 }
+    );
   }
 }

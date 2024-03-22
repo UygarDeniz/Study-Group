@@ -54,6 +54,9 @@ export async function DELETE(req: NextRequest, { params }) {
     return NextResponse.json({ message: "Member removed" }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred. Please try again." },
+      { status: 500 }
+    );
   }
 }

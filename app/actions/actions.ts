@@ -1,10 +1,9 @@
 "use server";
-import {db} from "@/app/_utils/db";
+import { db } from "@/app/_utils/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options";
-
 
 export default async function createGroup(formData: FormData) {
   try {
@@ -14,6 +13,9 @@ export default async function createGroup(formData: FormData) {
     description = description.trim();
 
     const session = await getServerSession(options);
+    if (!session) {
+      redirect("/api/auth/signin");
+    }
     const founderId = session.user.id;
     const group = await db.group.create({
       data: {
@@ -39,6 +41,9 @@ export async function createPost(groupId: string, formData: FormData) {
     const title = formData.get("title") as string;
     const content = formData.get("content") as string;
     const session = await getServerSession(options);
+    if (!session) {
+      redirect("/api/auth/signin");
+    }
     const authorId = session.user.id;
     const post = await db.post.create({
       data: {
@@ -64,6 +69,9 @@ export async function createComment(
   try {
     const content = formData.get("comment") as string;
     const session = await getServerSession(options);
+    if (!session) {
+      redirect("/api/auth/signin");
+    }
     const authorId = session.user.id;
     const comment = await db.comment.create({
       data: {
@@ -85,6 +93,9 @@ export async function changeUserSettings(formData: FormData) {
     const email = formData.get("email") as string;
     const bio = formData.get("bio") as string;
     const session = await getServerSession(options);
+    if (!session) {
+      redirect("/api/auth/signin");
+    }
     const user = await db.user.update({
       where: {
         id: session.user.id,

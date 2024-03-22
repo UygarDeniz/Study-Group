@@ -3,6 +3,9 @@ import "./globals.css";
 import Header from "./(components)/Header";
 import Footer from "./(components)/Footer";
 import ReactQueryProvider from "./(components)/ReactQueryProvider";
+import { getServerSession } from "next-auth";
+import Sidebar from "./(components)/Sidebar";
+import { options } from "./api/auth/[...nextauth]/options";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -13,14 +16,18 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const session = await getServerSession(options);
   return (
     <ReactQueryProvider>
       <html lang="en">
         <body className={inter.className}>
-          <Header />
+          {session?.user  ?  <Sidebar /> : <Header />}
+          <div className={session?.user ? "ml-20" : ""}>
+
           {children}
           <Footer />
+          </div>
         </body>
       </html>
     </ReactQueryProvider>

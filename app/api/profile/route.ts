@@ -5,7 +5,12 @@ import { db } from "@/app/_utils/db";
 
 export async function GET() {
   try {
-    const { user } = await getServerSession(options);
+    const session = await getServerSession(options);
+    if (!session) {
+      return NextResponse.json({ message: "No session" }, { status: 401 });
+    }
+    const user = session.user;
+
     const profile = await db.user.findUnique({
       where: {
         id: user.id,
@@ -14,22 +19,29 @@ export async function GET() {
         name: true,
         email: true,
         bio: true,
+        avatar: true,
       },
     });
     return NextResponse.json(profile);
   } catch (error) {
-    console.error("An error occurred:", error);
-    return NextResponse.json({ message: "An error occurred. Please try again." }, { status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred. Please try again." },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { user } = await getServerSession(options);
+    const session = await getServerSession(options);
+    const user = session?.user;
     const body = await req.json();
 
     if (!body.name || !body.email || !body.bio) {
-      return NextResponse.json({ message: "Missing name, email, or bio" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Missing name, email, or bio" },
+        { status: 400 }
+      );
     }
 
     await db.user.update({
@@ -43,9 +55,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ message: "Profile updated successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Profile updated successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("An error occurred:", error);
-    return NextResponse.json({ message: "An error occurred. Please try again." }, { status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred. Please try again." },
+      { status: 500 }
+    );
   }
 }

@@ -1,4 +1,3 @@
-
 import { changeGroupsDetails } from "@/app/actions/actions";
 import { db } from "@/app/_utils/db";
 const getGroup = async (groupId: string) => {
@@ -39,8 +38,10 @@ export default async function GroupSettings({ params }) {
   const { groupId } = params;
 
   const group = await getGroup(groupId);
-  const changeGroupsDetailsWithGroupId = changeGroupsDetails.bind(null, groupId);
-  if (!group) return <div>Loading...</div>;
+  const changeGroupsDetailsWithGroupId = changeGroupsDetails.bind(
+    null,
+    groupId
+  );
 
   return (
     <div className="flex flex-col items-center w-full">

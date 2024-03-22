@@ -7,16 +7,17 @@ type GroupCardProps = {
   id: string;
   name: string;
   description: string;
+  avatar: string;
 };
 
-function GroupCard({ id, name, description }: GroupCardProps) {
+function GroupCard({ id, name, description, avatar }: GroupCardProps) {
   return (
     <div className="bg-white shadow-xl hover:shadow-2xl rounded-lg w-80 pb-6 text-center">
       <Link href={`/groups/${id}`} className="flex flex-col items-center ">
         <div className="w-full h-full bg-gradient-to-b from-slate-200 to-white py-6 flex items-center justify-center rounded-t-lg">
           <div className="rounded-full bg-white p-2 ">
             <Image
-              src="/group1.jpg"
+              src={avatar}
               alt="Group 1"
               width="100"
               height="100"

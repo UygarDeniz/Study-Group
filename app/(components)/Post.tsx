@@ -11,6 +11,7 @@ type PostProps = {
   title: string;
   date: string;
   likes: number;
+  avatar: string;
   dislikes: number;
   author: string;
   authorId: string;
@@ -22,16 +23,17 @@ function Post({
   title,
   author,
   authorId,
+  avatar,
   date,
   likes,
   dislikes,
 }: PostProps) {
   return (
     <>
-      <article className="w-full pt-4 px-4 pb-1 hover:shadow-xl hover:bg-slate-50 rounded-xl flex flex-col gap-3">
+      <article className="w-full  px-6  bg-white py-10  over:shadow-xl  rounded-xl flex flex-col gap-3 mt-4">
         <div className="flex items-center gap-3">
           <Link href={`/profile/${authorId}`}>
-            <GroupImageSm image="/group2.jpg" />
+            <GroupImageSm image={avatar} />
           </Link>
           <Link href={`/profile/${authorId}`}>
             <h2 className="text-md text-gray-600 font-semibold hover:underline">

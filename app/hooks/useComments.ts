@@ -2,6 +2,7 @@ import{ useState, useEffect } from "react";
 type Author = {
   id: number;
   name: string;
+  avatar: string;
 };
 
 type CommentDislike = {
