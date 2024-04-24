@@ -14,19 +14,13 @@ function GroupCard({ id, name, description, avatar }: GroupCardProps) {
   return (
     <div className="bg-white shadow-xl hover:shadow-2xl rounded-lg w-80 pb-6 text-center">
       <Link href={`/groups/${id}`} className="flex flex-col items-center ">
-        <div className="w-full h-full bg-gradient-to-b from-slate-200 to-white py-6 flex items-center justify-center rounded-t-lg">
-          <div className="rounded-full bg-white p-2 ">
-            <Image
-              src={avatar}
-              alt="Group 1"
-              width="100"
-              height="100"
-              className="rounded-full"
-            />
+        <div className="w-full h-40 bg-gradient-to-b from-slate-200 to-white py-6 flex items-center justify-center rounded-t-lg">
+          <div className="rounded-full bg-white p-2 h-[100px] w-[100px] flex items-center justify-center  ">
+            <Image src={avatar} alt="Group 1" width="100" height="100" />
           </div>
         </div>
-        <h3 className="text-2xl mt-8 font-bold ">{name}</h3>
-        
+        <h3 className="text-2xl mt-8 font-bold">{name}</h3>
+
         <p className="text-center mt-4 mb-2 break-words overflow-auto">
           {description.length > 30
             ? description.substring(0, 30) + "..."

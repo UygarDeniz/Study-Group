@@ -49,30 +49,29 @@ async function page() {
 
   return (
     <main className="flex justify-around min-h-screen  py-10">
-      <div className="flex flex-col w-1/4  items-center mt-12 ">
-        <div>
-          <Image
-            src={userInfo.avatar}
-            alt="Profile"
-            width="150"
-            height="150"
-            className="rounded-full"
-          />
+      <div className="flex flex-col items-center w-1/4">
+        <Image
+          src={userInfo.avatar}
+          alt="Profile"
+          width="100"
+          height="100"
+          className="rounded-full"
+        />
 
-          <p className="text-3xl mt-6 font-medium">{userInfo.name}</p>
-          <p className="text-xl mt-3">{userInfo.bio}</p>
+        <p className="text-3xl mt-6 font-medium">{userInfo.name}</p>
+        <p className="text-xl mt-3">{userInfo.bio}</p>
 
-          <div className="mt-8">
-            <Link
-              href="/profile/me/edit"
-              className=" py-2 px-14 border-2 border-black rounded-full"
-            >
-              {" "}
-              Edit Profile
-            </Link>
-          </div>
+        <div className="mt-8">
+          <Link
+            href="/profile/me/edit"
+            className="py-2 px-14 border-2 border-black rounded-full"
+          >
+            {" "}
+            Edit Profile
+          </Link>
         </div>
       </div>
+
       <div className="w-full max-w-screen-lg mt-12 ">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-medium text-gray-700">Your Groups</h1>

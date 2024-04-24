@@ -21,7 +21,7 @@ function NewPost({ params }) {
               name="title"
               className="w-full border-2 py-8 px-2 border-gray-800 text-gray-900 focus:outline-none focus:border-rose-600"
               required
-              maxLength={20}
+              maxLength={50}
             />
             <label
               htmlFor="title"

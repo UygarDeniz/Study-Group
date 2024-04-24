@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options";
+import socket from "@/app/_utils/socket";
 
 export default async function createGroup(formData: FormData) {
   try {
@@ -138,6 +139,41 @@ export const changeGroupsDetails = async (
     revalidatePath(`/groups/${groupId}`);
   } catch (error) {
     console.error("Error updating group details:", error);
+    throw error;
+  }
+};
+
+export const sendMessage = async (conversation, formData: FormData) => {
+  try {
+    const session = await getServerSession(options);
+    if (!session) {
+      redirect("/api/auth/signin");
+    }
+
+    const userId = session.user.id;
+    const message = formData.get("message") as string;
+
+    if (!message) {
+      throw new Error("Message is required");
+    }
+    if (!conversation) {
+      throw new Error("Conversation is required");
+    }
+    if (socket.connected) {
+      socket.emit("message", { message, conversationId: conversation.id });
+    } else {
+      console.error("Socket is not connected");
+    }
+
+    const newMessage = await db.message.create({
+      data: {
+        content: message,
+        senderId: userId,
+        conversationId: conversation.id,
+      },
+    });
+  } catch (error) {
+    console.error("Error sending message:", error);
     throw error;
   }
 };

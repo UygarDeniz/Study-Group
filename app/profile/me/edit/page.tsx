@@ -92,9 +92,9 @@ function EditProfile() {
         <Image
           src={userProfile.avatar}
           alt="Profile"
-          width="150"
-          height="150"
-          className="rounded-full mb-10"
+          width="144"
+          height="144"
+          className="rounded-full aspect-square object-cover"
         />
 
         <UploadButton

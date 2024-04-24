@@ -61,7 +61,7 @@ Requirements:
 
 - [x] avatar upload (Used uploadthings)
 
-- [ ] livechat
+- [ ] livechat 
 
 - [ ] responsivness
 - [ ] zoom/google meets and study seassion

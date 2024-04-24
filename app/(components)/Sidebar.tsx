@@ -1,11 +1,13 @@
 import { db } from "../_utils/db";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options";
 import Link from "next/link";
 import { FaUser } from "react-icons/fa";
 import { FaRegCompass } from "react-icons/fa6";
 import SidebarGroups from "./SidebarGroups";
+import { BsFillChatLeftFill } from "react-icons/bs";
+
 const getUserGroups = async (userId: string) => {
   const groups = await db.group.findMany({
     where: {
@@ -26,6 +28,9 @@ async function Sidebar() {
 
   return (
     <div className="fixed top-0 left-0 inset-0 flex flex-col  text-center justify-between items-center h-full p-2 bg-sky-950 w-20">
+      <Link href="/chat" className="text-white font-semibold">
+        <BsFillChatLeftFill className="text-3xl text-white mt-10" />
+      </Link>
       <SidebarGroups userGroups={userGroups} />
       <nav className="flex flex-col justify-center items-center gap-4 text-white">
         <Link

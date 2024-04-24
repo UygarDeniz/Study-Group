@@ -36,7 +36,7 @@ function signup() {
         router.refresh();
         router.push("/");
         signIn("credentials", {
-          username: formData.email,
+          email: formData.email,
           password: formData.password,
           callbackUrl: "/",
         });

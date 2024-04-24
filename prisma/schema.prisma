@@ -15,7 +15,7 @@ model User {
   password  String
   updatedAt DateTime @updatedAt
   bio       String?
-  avatar    String? @default("https://utfs.io/f/ec604648-73dc-45d7-97e2-2ae2b6137f89-oubu9r.jpg")
+  avatar    String?  @default("https://utfs.io/f/ec604648-73dc-45d7-97e2-2ae2b6137f89-oubu9r.jpg")
 
   groups         GroupMember[]
   adminOf        GroupAdmin[]
@@ -25,6 +25,8 @@ model User {
   PostLike       PostLike[]
   PostDislike    PostDislike[]
   CommentDislike CommentDislike[]
+  sentMessages        Message[]
+  Conversation   Conversation[]
 }
 
 model Group {
@@ -123,4 +125,22 @@ model CommentDislike {
   commentId Int
   User      User     @relation(fields: [userId], references: [id])
   Comment   Comment  @relation(fields: [commentId], references: [id])
+}
+
+model Message {
+  id             Int           @id @default(autoincrement())
+  createdAt      DateTime      @default(now())
+  content        String
+  senderId       Int
+  conversationId Int
+  sender         User          @relation(fields: [senderId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model Conversation {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  users     User[]
+  Message   Message[]
 }

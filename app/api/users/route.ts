@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import bcrypt from "bcrypt";
 import { db } from "@/app/_utils/db";
+import { getServerSession } from "next-auth";
+import { options } from "../auth/[...nextauth]/options";
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
@@ -47,4 +49,12 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+//current user
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(options);
+  if (!session) {
+    return NextResponse.json({ user: null });
+  }
+  return NextResponse.json({ user: session.user });
 }
