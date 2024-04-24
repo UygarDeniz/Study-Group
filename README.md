@@ -2,7 +2,7 @@
 
 A web application that helps students form virtual study groups. The platform should allow students to collaborate, share resources, and schedule study sessions. Alternative to study with me videos (maybe).
 
-Technologies: Next.js, Typescript, MySQL, Prisma, Tailwind CSS
+Technologies: Next.js, Typescript, MySQL, Prisma, Tailwind CSS, Socket.io, Uploadthing
 
 MVP bold
 Requirements:
@@ -61,9 +61,9 @@ Requirements:
 
 - [x] avatar upload (Used uploadthings)
 
-- [ ] livechat 
+- [x] livechat 
 
 - [ ] responsivness
-- [ ] zoom/google meets and study seassion
 
+- [ ] zoom/google meets and study seassion
 - [ ] share file (needs extra storage space)
