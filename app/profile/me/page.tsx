@@ -48,8 +48,8 @@ async function page() {
   const userInfo = await getUserInfo(user);
 
   return (
-    <main className="flex justify-around min-h-screen  py-10">
-      <div className="flex flex-col items-center w-1/4">
+    <main className="flex justify-around min-h-screen flex-col md:flex-row py-10 ">
+      <div className="flex flex-col mx-auto items-center md:w-1/4">
         <Image
           src={userInfo.avatar}
           alt="Profile"
@@ -58,13 +58,13 @@ async function page() {
           className="rounded-full"
         />
 
-        <p className="text-3xl mt-6 font-medium">{userInfo.name}</p>
+        <p className="text-2xl lg:text-3xl mt-6 font-medium whitespace-nowrap">{userInfo.name}</p>
         <p className="text-xl mt-3">{userInfo.bio}</p>
 
         <div className="mt-8">
           <Link
             href="/profile/me/edit"
-            className="py-2 px-14 border-2 border-black rounded-full"
+            className="py-2 px-6 lg:px-12 border-2 border-black rounded-full"
           >
             {" "}
             Edit Profile
@@ -82,7 +82,7 @@ async function page() {
           </h2>
         </div>
         <hr className="mb-20 mt-4 border-gray-400" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-20">
+        <div className="flex flex-wrap gap-x-8 justify-center items-center gap-y-20">
           {groups.map((group) => (
             <GroupCard
               key={group.id}

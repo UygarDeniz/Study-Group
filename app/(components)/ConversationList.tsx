@@ -35,7 +35,7 @@ const ConversationList: React.FC<Props> = ({
   currentUser,
   handleSelectConversation,
 }) => (
-  <div className="w-1/4 overflow-auto p-4  bg-[#111b21] border-r-2 border-[#202c33]">
+  <div className="w-1/4 min-w-[300px]  overflow-auto p-4  bg-[#111b21] border-r-2 border-[#202c33]">
     <h1 className="text-2xl font-bold mb-4">Chats</h1>
     {conversations.map((conversation, index) => (
       <div
@@ -46,13 +46,13 @@ const ConversationList: React.FC<Props> = ({
         {conversation.users
           .filter((user) => user.id !== currentUser.id)
           .map((user) => (
-            <div key={user.id} className="flex items-center">
+            <div key={user.id} className="flex items-center w-full">
               <img
                 src={user.avatar}
                 alt={user.name}
                 className="w-9 h-9 rounded-full object-cover"
               />
-              <span className="ml-2 text-lg">{user.name}</span>
+              <span className="ml-2 text-lg whitespace-nowrap">{user.name}</span>
             </div>
           ))}
       </div>

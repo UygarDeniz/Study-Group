@@ -188,7 +188,7 @@ export default function Chat() {
         currentUser={currentUser}
         handleSelectConversation={handleSelectConversation}
       />
-      <div className="w-3/4 flex flex-col  shadow-lg  overflow-hidden bg-[#0b141a]">
+      <div className="w-3/4 flex flex-col  shadow-lg  overflow-hidden  bg-[#0b141a]">
         {selectedConversation ? (
           <>
             <MessageList

@@ -28,42 +28,28 @@ Requirements:
 
 - [x] Join functionalty
 - [x] Leave functionalty
-
 - [x] like post
 - [x] like comment
-
 - [x] Profile
-
   - [x] info
   - [x] Joined Groups
   - [x] update settings
-
 - [x] search functionalty for groups
-
 - [x] react query
-
 - [x] implement infinite scrolling or pagination to comments/posts/groups
-
 - [x] view user profiles
-
 - [x] group settings for admins
-
   - [x] change group name and description
   - [x] add remove admin
   - [x] remove member from group
   - [ ] Check authorization for group settings
-
 - [x] sidebar (groups, settings, profile)
-
 - [x] middleware to check authorization
-
 - [x] header responsiveness
-
 - [x] avatar upload (Used uploadthings)
+- [x] livechat
+- [x] responsivness
 
-- [x] livechat 
-
-- [ ] responsivness
-
+- [ ] types folder
 - [ ] zoom/google meets and study seassion
 - [ ] share file (needs extra storage space)

@@ -108,14 +108,14 @@ export default async function GroupPage({ params, searchParams }) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 ">
-            <div className="flex justify-end space-x-4">
+            {/* <div className="flex justify-end space-x-4">
               <button className={sort === "latest" ? "font-semibold" : ""}>
                 Latest
               </button>
               <button className={sort === "popular" ? "font-semibold" : ""}>
                 Popular
               </button>
-            </div>
+            </div> */}
             <hr />
             <div>
               {group.Post?.length !== 0 ? (

@@ -132,7 +132,7 @@ function Post({ params }: Props) {
   return (
     <div className=" max-w-screen-xl mx-auto mt-10 min-h-screen">
       <main className="grid grid-cols-5 justify-between">
-        <div className="col-span-4 ">
+        <div className="col-span-5 md:col-span-4 md: mx-6 ">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link
